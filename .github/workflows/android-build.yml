@@ -69,8 +69,12 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Capacitor sync
+        id: sync
+        continue-on-error: true
+        shell: bash
         working-directory: packages/web
         run: |
+          exec > >(tee -a "$GITHUB_WORKSPACE/ci-diag.log") 2>&1
           echo "===== 环境诊断 ====="
           node -v && pnpm -v
           echo "--- cap 可执行文件 ---"
@@ -79,10 +83,24 @@ jobs:
           ls -la dist 2>&1 | head -20 || echo "!! dist 不存在"
           echo "--- @capacitor 包 ---"
           ls node_modules/@capacitor 2>&1 || echo "!! @capacitor 未安装到 packages/web"
+          echo "--- android 目录 ---"
+          ls -la android 2>&1 | head -30
           echo "===== 执行 cap sync ====="
           # 兜底：pnpm exec 解析不到时直接调本地 cap 二进制
           pnpm exec cap sync android --verbose \
             || node node_modules/@capacitor/cli/bin/capacitor sync android --verbose
+
+      - name: Upload diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-diagnostics
+          path: ci-diag.log
+          if-no-files-found: warn
+
+      - name: Fail if sync failed
+        if: steps.sync.outcome == 'failure'
+        run: echo "cap sync 失败，详见 ci-diagnostics artifact" && exit 1
 
       - name: Build Debug APK
         working-directory: packages/web/android
