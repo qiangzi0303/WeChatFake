@@ -70,7 +70,19 @@ jobs:
 
       - name: Capacitor sync
         working-directory: packages/web
-        run: pnpm exec cap sync android --verbose
+        run: |
+          echo "===== 环境诊断 ====="
+          node -v && pnpm -v
+          echo "--- cap 可执行文件 ---"
+          ls -la node_modules/.bin/ | grep -i cap || echo "!! node_modules/.bin 内无 cap"
+          echo "--- dist 产物 ---"
+          ls -la dist 2>&1 | head -20 || echo "!! dist 不存在"
+          echo "--- @capacitor 包 ---"
+          ls node_modules/@capacitor 2>&1 || echo "!! @capacitor 未安装到 packages/web"
+          echo "===== 执行 cap sync ====="
+          # 兜底：pnpm exec 解析不到时直接调本地 cap 二进制
+          pnpm exec cap sync android --verbose \
+            || node node_modules/@capacitor/cli/bin/capacitor sync android --verbose
 
       - name: Build Debug APK
         working-directory: packages/web/android
