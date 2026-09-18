@@ -62,13 +62,15 @@ jobs:
           VITE_APP_MODE: "true"
         run: pnpm run build
 
-      - name: Capacitor sync
-        working-directory: packages/web
-        run: pnpm exec cap sync android
-
+      # 必须在 cap sync 之前：cap sync 内部会调用 gradlew 解析原生插件，
+      # 而 gradlew 从 Windows 提交时可能丢失可执行权限位
       - name: Grant execute permission for gradlew
         working-directory: packages/web/android
         run: chmod +x ./gradlew
+
+      - name: Capacitor sync
+        working-directory: packages/web
+        run: pnpm exec cap sync android --verbose
 
       - name: Build Debug APK
         working-directory: packages/web/android
