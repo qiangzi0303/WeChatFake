@@ -1,7 +1,9 @@
 import { App as AntdApp, ConfigProvider } from "antd";
 import { useTranslation } from "react-i18next";
 
+import { isAppMode } from "./appMode";
 import LeftPanel from "./components/LeftPanel";
+import MobileEditLayer from "./components/MobileEditLayer";
 import RightPanel from "./components/RightPanel";
 import Screen from "./components/Screen";
 import TopPopover from "./components/TopPopover";
@@ -12,14 +14,25 @@ const App = () => {
 	const inShareMode = !!window.__SHARE_KEY__;
 	const { i18n } = useTranslation();
 
+	// App 模式：铺满整个视口的纯微信界面，无开发面板、无边框
+	if (isAppMode || inShareMode) {
+		return (
+			<ConfigProvider locale={ANTD_LANG_MAP[i18n.language as keyof typeof ANTD_LANG_MAP]}>
+				<AntdApp className="h-screen w-screen overflow-hidden">
+					<Screen />
+				</AntdApp>
+				{isAppMode && !inShareMode && <MobileEditLayer />}
+				<Tour />
+			</ConfigProvider>
+		);
+	}
+
 	return (
 		<ConfigProvider locale={ANTD_LANG_MAP[i18n.language as keyof typeof ANTD_LANG_MAP]}>
 			<div className="grid min-h-screen grid-cols-3 max-lg:grid-cols-1">
-				{!inShareMode && (
-					<AntdApp className="max-lg:hidden">
-						<LeftPanel />
-					</AntdApp>
-				)}
+				<AntdApp className="max-lg:hidden">
+					<LeftPanel />
+				</AntdApp>
 				<div
 					className="flex items-center justify-center overflow-auto border-orange-400 border-r border-l border-dashed max-lg:border-none"
 					id="center"
@@ -30,7 +43,7 @@ const App = () => {
 						</TopPopover>
 					</div>
 				</div>
-				{!inShareMode && <RightPanel />}
+				<RightPanel />
 			</div>
 			<Tour />
 		</ConfigProvider>
@@ -38,3 +51,4 @@ const App = () => {
 };
 
 export default App;
+
