@@ -23,10 +23,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # 不指定 version：由根 package.json 的 packageManager 字段决定（pnpm 9.1.3），
+      # 同时指定两处会触发 ERR_PNPM_BAD_PM_VERSION
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: 9.1.3
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
