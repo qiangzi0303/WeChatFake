@@ -4,7 +4,7 @@
  * App 模式下：
  * - 隐藏左右开发面板（LeftPanel / RightPanel）
  * - 微信界面铺满整个视口
- * - 显示微信自带的状态栏（时间/信号/电量）
+ * - 状态栏使用手机系统自带的（页面内不再绘制模拟状态栏）
  */
 export const isAppMode =
 	import.meta.env.VITE_APP_MODE === "true" ||

@@ -1,13 +1,12 @@
 import { Global, css } from "@emotion/react";
 import { type CSSProperties, memo } from "react";
-import { isDesktop, isMobileOnly } from "react-device-detect";
+import { isMobileOnly } from "react-device-detect";
 import { ErrorBoundary } from "react-error-boundary";
 import { Outlet } from "react-router-dom";
 
 import { isAppMode } from "@/appMode";
 import Fallback from "../Fallback";
 import DetectedOverall from "../NodeDetected/DetectedFloating";
-import StatusBar from "../StatusBar";
 import useDeviceConfig from "../useDeviceConfig";
 
 const Screen = () => {
@@ -32,8 +31,7 @@ const Screen = () => {
         `}
 			/>
 			<DetectedOverall />
-			{/* App 模式下用手机真实状态栏（时间/信号/电量），不渲染页面内的模拟状态栏 */}
-			{isDesktop && !isAppMode && <StatusBar />}
+			{/* 不渲染模拟状态栏（时间/信号/电量）：App 模式用手机真实状态栏，浏览器里也不需要 */}
 			<ErrorBoundary FallbackComponent={Fallback}>
 				<Outlet />
 			</ErrorBoundary>
