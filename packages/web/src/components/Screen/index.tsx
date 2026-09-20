@@ -32,7 +32,8 @@ const Screen = () => {
         `}
 			/>
 			<DetectedOverall />
-			{(isDesktop || isAppMode) && <StatusBar />}
+			{/* App 模式下用手机真实状态栏（时间/信号/电量），不渲染页面内的模拟状态栏 */}
+			{isDesktop && !isAppMode && <StatusBar />}
 			<ErrorBoundary FallbackComponent={Fallback}>
 				<Outlet />
 			</ErrorBoundary>

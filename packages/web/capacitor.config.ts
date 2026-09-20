@@ -19,9 +19,12 @@ const config: CapacitorConfig = {
 			showSpinner: false,
 		},
 		StatusBar: {
-			// 状态栏样式由页面内微信状态栏自行绘制，这里设为覆盖模式
-			overlaysWebView: true,
-			style: "DARK",
+			// 页面内不再渲染模拟状态栏，改用手机真实状态栏，
+			// 故关闭覆盖模式让它独占空间，避免遮住微信标题栏
+			overlaysWebView: false,
+			// 微信主色为浅色背景，状态栏图标用深色
+			style: "LIGHT",
+			backgroundColor: "#ededed",
 		},
 	},
 };
