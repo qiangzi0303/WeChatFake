@@ -1,3 +1,4 @@
+import { isAppMode } from "@/appMode";
 import ADD_OUTLINED_SVG from "@/assets/add-outlined.svg?react";
 import ALBUM_OUTLINED_SVG from "@/assets/album-outlined.svg?react";
 import ARROW_OUTLINED_SVG from "@/assets/arrow-outlined.svg?react";
@@ -9,12 +10,14 @@ import Setting_Outlined_SVG from "@/assets/setting-outlined.svg?react";
 import StickerOutlinedSVG from "@/assets/sticker-outlined.svg?react";
 import { h } from "@/components/HashAssets";
 import { canBeDetected } from "@/components/NodeDetected";
+import useMode from "@/components/useMode";
 import useModeNavigate from "@/components/useModeNavigate";
 import { EBottomNavBars } from "@/stateV2/bottomNavbars";
 import { EMetaDataType } from "@/stateV2/detectedNode";
 import { myProfileAtom } from "@/stateV2/profile";
 import BottomNavbar, { useToggleNavbarActivated } from "@/wechatComponents/BottomNavbar";
 import List from "@/wechatComponents/List";
+import { EditOutlined } from "@ant-design/icons";
 import { useAtomValue } from "jotai";
 import { useTranslation } from "react-i18next";
 import CircularNotchSVG from "./assets/circular-notch.svg?react";
@@ -22,6 +25,7 @@ import CircularNotchSVG from "./assets/circular-notch.svg?react";
 const My = () => {
 	const { avatarInfo, wechat, nickname } = useAtomValue(myProfileAtom)!;
 	const navigate = useModeNavigate();
+	const { setMode } = useMode();
 	const { t } = useTranslation();
 	useToggleNavbarActivated(EBottomNavBars.MY);
 
@@ -89,6 +93,15 @@ const My = () => {
 					<List.Item withJump icon={<Setting_Outlined_SVG fill="#2A7FCB" />}>
 						{t("wechatPage.my.settings")}
 					</List.Item>
+					{isAppMode && (
+						<List.Item
+							icon={<EditOutlined className="text-[#07c160] text-lg" />}
+							onClick={() => setMode("edit")}
+							rightClassName="text-black/90"
+						>
+							编辑模式
+						</List.Item>
+					)}
 				</List>
 			</div>
 			<BottomNavbar />
