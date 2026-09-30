@@ -9,6 +9,7 @@ import QRCODE_OUTLINED_SVG from "@/assets/qrcode-outlined.svg?react";
 import Setting_Outlined_SVG from "@/assets/setting-outlined.svg?react";
 import StickerOutlinedSVG from "@/assets/sticker-outlined.svg?react";
 import { h } from "@/components/HashAssets";
+import ImportChatRecord from "@/components/ImportChatRecord";
 import { canBeDetected } from "@/components/NodeDetected";
 import useMode from "@/components/useMode";
 import useModeNavigate from "@/components/useModeNavigate";
@@ -17,7 +18,7 @@ import { EMetaDataType } from "@/stateV2/detectedNode";
 import { myProfileAtom } from "@/stateV2/profile";
 import BottomNavbar, { useToggleNavbarActivated } from "@/wechatComponents/BottomNavbar";
 import List from "@/wechatComponents/List";
-import { EditOutlined } from "@ant-design/icons";
+import { EditOutlined, ImportOutlined } from "@ant-design/icons";
 import { useAtomValue } from "jotai";
 import { useTranslation } from "react-i18next";
 import CircularNotchSVG from "./assets/circular-notch.svg?react";
@@ -94,13 +95,24 @@ const My = () => {
 						{t("wechatPage.my.settings")}
 					</List.Item>
 					{isAppMode && (
-						<List.Item
-							icon={<EditOutlined className="text-[#07c160] text-lg" />}
-							onClick={() => setMode("edit")}
-							rightClassName="text-black/90"
-						>
-							编辑模式
-						</List.Item>
+						<>
+							<ImportChatRecord
+								renderTrigger={(openPicker) => (
+									<List.Item
+										icon={<ImportOutlined className="text-[#576b95] text-lg" />}
+										onClick={openPicker}
+									>
+										导入聊天记录
+									</List.Item>
+								)}
+							/>
+							<List.Item
+								icon={<EditOutlined className="text-[#07c160] text-lg" />}
+								onClick={() => setMode("edit")}
+							>
+								编辑模式
+							</List.Item>
+						</>
 					)}
 				</List>
 			</div>

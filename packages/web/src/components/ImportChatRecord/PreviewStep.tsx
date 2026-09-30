@@ -1,6 +1,6 @@
+import { MYSELF_ID } from "@/faker/wechat/user";
 import type { IFolderContent, IParseResult } from "@/services/chatImport";
 import { EParsedMessageType, summarizeMessage } from "@/services/chatImport";
-import { MYSELF_ID } from "@/faker/wechat/user";
 import type { IStateProfile } from "@/stateV2/profile";
 import { Alert, Button, Checkbox, Form, Input, Radio, Select, Table, Tag } from "antd";
 import dayjs from "dayjs";
@@ -32,14 +32,7 @@ const TYPE_LABEL: Record<EParsedMessageType, string> = {
 	[EParsedMessageType.system]: "系统提示",
 };
 
-const PreviewStep = ({
-	folder,
-	parseResult,
-	profiles,
-	importing,
-	onCancel,
-	onConfirm,
-}: Props) => {
+const PreviewStep = ({ folder, parseResult, profiles, importing, onCancel, onConfirm }: Props) => {
 	const { messages, speakers, warnings } = parseResult;
 
 	// 默认把出现次数少的一方当作「我」，通常导出方是对话主体
@@ -66,9 +59,7 @@ const PreviewStep = ({
 	const hasRedPacket = messages.some((v) => v.type === EParsedMessageType.redPacket);
 
 	const missingAttachments = useMemo(() => {
-		const names = new Set(
-			messages.map((v) => v.attachmentName).filter((v): v is string => !!v),
-		);
+		const names = new Set(messages.map((v) => v.attachmentName).filter((v): v is string => !!v));
 		return Array.from(names).filter((name) => !folder.attachments[name]);
 	}, [messages, folder]);
 
@@ -86,8 +77,8 @@ const PreviewStep = ({
 				showIcon
 				message={
 					<span>
-						已读取 <b>{folder.textFileName}</b>，共解析出 <b>{messages.length}</b> 条消息，
-						附件 <b>{Object.keys(folder.attachments).length}</b> 个
+						已读取 <b>{folder.textFileName}</b>，共解析出 <b>{messages.length}</b> 条消息， 附件{" "}
+						<b>{Object.keys(folder.attachments).length}</b> 个
 					</span>
 				}
 			/>
@@ -141,10 +132,7 @@ const PreviewStep = ({
 					/>
 				</Form.Item>
 
-				<Form.Item
-					label="对方导入到哪个联系人"
-					extra={`留空则新建联系人「${friendSpeaker}」`}
-				>
+				<Form.Item label="对方导入到哪个联系人" extra={`留空则新建联系人「${friendSpeaker}」`}>
 					<Select
 						allowClear
 						showSearch
@@ -188,7 +176,7 @@ const PreviewStep = ({
 				rowKey="index"
 				dataSource={messages}
 				pagination={{ pageSize: 8, size: "small" }}
-				scroll={{ y: 240 }}
+				scroll={{ y: 240, x: "max-content" }}
 				columns={[
 					{
 						title: "时间",
@@ -222,9 +210,7 @@ const PreviewStep = ({
 								{record.attachmentName && (
 									<span
 										className={
-											folder.attachments[record.attachmentName]
-												? "text-gray-400"
-												: "text-red-400"
+											folder.attachments[record.attachmentName] ? "text-gray-400" : "text-red-400"
 										}
 									>
 										{" "}

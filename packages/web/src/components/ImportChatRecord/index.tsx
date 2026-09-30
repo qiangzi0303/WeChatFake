@@ -1,3 +1,4 @@
+import { isAppMode } from "@/appMode";
 import {
 	type IFolderContent,
 	type IParseResult,
@@ -8,10 +9,18 @@ import {
 import { getAllProfilesValueSnapshot } from "@/stateV2/profile";
 import { ImportOutlined } from "@ant-design/icons";
 import { App, Button, Modal } from "antd";
-import { useRef, useState } from "react";
+import { type ReactNode, useRef, useState } from "react";
 import PreviewStep from "./PreviewStep";
 
-const ImportChatRecord = () => {
+type Props = {
+	/**
+	 * 自定义触发器。收到的 open 回调会拉起文件选择。
+	 * 移动端用微信风格的列表行，桌面端用默认按钮。
+	 */
+	renderTrigger?: (open: () => void) => ReactNode;
+};
+
+const ImportChatRecord = ({ renderTrigger }: Props) => {
 	const { message } = App.useApp();
 	const inputRef = useRef<HTMLInputElement>(null);
 	const [open, setOpen] = useState(false);
@@ -78,11 +87,17 @@ const ImportChatRecord = () => {
 		}
 	};
 
+	const openPicker = () => inputRef.current?.click();
+
 	return (
 		<>
-			<Button icon={<ImportOutlined />} onClick={() => inputRef.current?.click()}>
-				导入聊天记录
-			</Button>
+			{renderTrigger ? (
+				renderTrigger(openPicker)
+			) : (
+				<Button icon={<ImportOutlined />} onClick={openPicker}>
+					导入聊天记录
+				</Button>
+			)}
 			<input
 				ref={inputRef}
 				type="file"
@@ -96,7 +111,12 @@ const ImportChatRecord = () => {
 			<Modal
 				open={open}
 				title="导入聊天记录"
-				width={720}
+				// 手机屏幕放不下固定 720，改成几乎铺满
+				width={isAppMode ? "94vw" : 720}
+				style={isAppMode ? { top: 16, maxWidth: "94vw", padding: 0 } : undefined}
+				styles={
+					isAppMode ? { body: { maxHeight: "78vh", overflowY: "auto", padding: 12 } } : undefined
+				}
 				onCancel={closeModal}
 				footer={null}
 				destroyOnClose

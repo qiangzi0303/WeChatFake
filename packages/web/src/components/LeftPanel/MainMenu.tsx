@@ -5,9 +5,9 @@ import { App, Button, Dropdown, Tooltip } from "antd";
 import Dexie from "dexie";
 import { useSetAtom } from "jotai";
 import { useTranslation } from "react-i18next";
+import ImportChatRecord from "../ImportChatRecord";
 import useAppInfo from "../useAppInfo";
 import GenerateRandomUser from "./GenerateRandomUser";
-import ImportChatRecord from "./ImportChatRecord";
 import ScreenDevicesSelect from "./ScreenDevicesSelect";
 import ScreenshotButton from "./ScreenshotButton";
 

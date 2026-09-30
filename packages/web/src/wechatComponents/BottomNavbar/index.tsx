@@ -1,3 +1,4 @@
+import { isAppMode } from "@/appMode";
 import AddressBookFilledSVG from "@/assets/address-book-filled.svg?react";
 import AddressBookOutlinedSVG from "@/assets/address-book-outlined.svg?react";
 import DiscoverFilledSVG from "@/assets/discover-filled.svg?react";
@@ -37,6 +38,9 @@ const BottomNavbar = () => {
 	const { WECHAT, ADDRESS_BOOK, DISCOVER, MY } = bottomNavbars;
 	const navigate = useNavigate();
 	const { t } = useTranslation();
+	// App 模式下导航栏是唯一的换页入口，编辑模式也要能点，
+	// 否则进了编辑就困在当前页。桌面端有节点树，维持原行为。
+	const keepNavigable = isAppMode;
 
 	return (
 		<canBeDetected.div
@@ -45,6 +49,7 @@ const BottomNavbar = () => {
 		>
 			<canBeDetected.div
 				className="flex cursor-pointer flex-col items-center justify-center space-y-1 py-2"
+				detectDisabled={keepNavigable}
 				metaData={{
 					type: EMetaDataType.NavigationBar,
 					index: EBottomNavBars.WECHAT,
@@ -73,6 +78,7 @@ const BottomNavbar = () => {
 			</canBeDetected.div>
 			<canBeDetected.div
 				className="flex cursor-pointer flex-col items-center justify-center space-y-1 py-2"
+				detectDisabled={keepNavigable}
 				metaData={{
 					type: EMetaDataType.NavigationBar,
 					index: EBottomNavBars.ADDRESS_BOOK,
@@ -101,6 +107,7 @@ const BottomNavbar = () => {
 			</canBeDetected.div>
 			<canBeDetected.div
 				className="flex cursor-pointer flex-col items-center justify-center space-y-1 py-2"
+				detectDisabled={keepNavigable}
 				metaData={{
 					type: EMetaDataType.NavigationBar,
 					index: EBottomNavBars.DISCOVER,
@@ -129,6 +136,7 @@ const BottomNavbar = () => {
 			</canBeDetected.div>
 			<canBeDetected.div
 				className="flex cursor-pointer flex-col items-center justify-center space-y-1 py-2"
+				detectDisabled={keepNavigable}
 				metaData={{
 					type: EMetaDataType.NavigationBar,
 					index: EBottomNavBars.MY,

@@ -27,6 +27,14 @@ import useMode from "../useMode";
 export type InjectProps = {
 	metaData?: StaticMetaData.InjectMetaData | StaticMetaData.InjectMetaData[];
 	nodeTreeSort?: boolean;
+	/**
+	 * 即使处于编辑模式也不接管交互，保持组件原有的 onClick。
+	 *
+	 * 编辑模式下本组件会把 onClick 替换成「选中该节点」，
+	 * 这让节点自身的跳转失效。移动端底部导航栏是唯一的换页手段，
+	 * 被接管后就困在当前页了，所以那里需要让路。
+	 */
+	detectDisabled?: boolean;
 };
 
 type PropsAreEqual<P> = (prevProps: Readonly<P>, nextProps: Readonly<P>) => boolean;
@@ -42,7 +50,7 @@ function canBeDetected<T extends object>(
 	const NodeDetected = (
 		props: InjectProps & T & HTMLAttributes<void> & { innerRef?: Ref<any> },
 	) => {
-		const { metaData: injectMetaData, innerRef, id: preId, nodeTreeSort } = props;
+		const { metaData: injectMetaData, innerRef, id: preId, nodeTreeSort, detectDisabled } = props;
 		const id = preId ?? useId();
 		const currentNodeAtom = useCreation(
 			() =>
@@ -112,9 +120,9 @@ function canBeDetected<T extends object>(
 			setHovered(id);
 		}, []);
 
-		const fp = omit(props, ["metaData", "innerRef", "nodeTreeSort"]);
+		const fp = omit(props, ["metaData", "innerRef", "nodeTreeSort", "detectDisabled"]);
 
-		if (isPreview) {
+		if (isPreview || detectDisabled) {
 			return component({
 				...(fp as T & HTMLAttributes<void>),
 				ref: mergedRef,
