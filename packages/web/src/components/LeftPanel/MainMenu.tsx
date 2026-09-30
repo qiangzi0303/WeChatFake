@@ -7,6 +7,7 @@ import { useSetAtom } from "jotai";
 import { useTranslation } from "react-i18next";
 import useAppInfo from "../useAppInfo";
 import GenerateRandomUser from "./GenerateRandomUser";
+import ImportChatRecord from "./ImportChatRecord";
 import ScreenDevicesSelect from "./ScreenDevicesSelect";
 import ScreenshotButton from "./ScreenshotButton";
 
@@ -43,6 +44,11 @@ const MainMenu = () => {
 				<div className="grid grid-cols-2 gap-1">
 					<div className="col-span-1">{t("menu.mainBlock.friends")}</div>
 					<GenerateRandomUser />
+				</div>
+
+				<div className="grid grid-cols-2 items-center gap-1">
+					<div className="col-span-1">聊天记录</div>
+					<ImportChatRecord />
 				</div>
 
 				<div className="grid grid-cols-2 items-center gap-1">
