@@ -1,4 +1,4 @@
-import { isAppMode } from "@/appMode";
+﻿import { isAppMode } from "@/appMode";
 import AddressBookFilledSVG from "@/assets/address-book-filled.svg?react";
 import AddressBookOutlinedSVG from "@/assets/address-book-outlined.svg?react";
 import DiscoverFilledSVG from "@/assets/discover-filled.svg?react";
@@ -72,7 +72,7 @@ const BottomNavbar = () => {
 						stroke={WECHAT.activated ? "unset" : "black"}
 					/>
 				</Badge>
-				<span className={twJoin("text-xs", WECHAT.activated && "text-[#07C160]")}>
+				<span className={twJoin("text-wechatTab", WECHAT.activated && "text-[#07C160]")}>
 					{t("wechatPage.bottomNavbar.wechat")}
 				</span>
 			</canBeDetected.div>
@@ -101,7 +101,7 @@ const BottomNavbar = () => {
 						<AddressBookOutlinedSVG className="h-7 w-7" fill="black" />
 					)}
 				</Badge>
-				<span className={twJoin("text-xs", ADDRESS_BOOK.activated && "text-[#07C160]")}>
+				<span className={twJoin("text-wechatTab", ADDRESS_BOOK.activated && "text-[#07C160]")}>
 					{t("wechatPage.bottomNavbar.contacts")}
 				</span>
 			</canBeDetected.div>
@@ -130,7 +130,7 @@ const BottomNavbar = () => {
 						<DiscoverOutlinedSVG className="h-7 w-7" fill="black" />
 					)}
 				</Badge>
-				<span className={twJoin("text-xs", DISCOVER.activated && "text-[#07C160]")}>
+				<span className={twJoin("text-wechatTab", DISCOVER.activated && "text-[#07C160]")}>
 					{t("wechatPage.bottomNavbar.discover")}
 				</span>
 			</canBeDetected.div>
@@ -159,7 +159,7 @@ const BottomNavbar = () => {
 						<PeopleOutlinedSVG className="h-7 w-7" fill="black" />
 					)}
 				</Badge>
-				<span className={twJoin("text-xs", MY.activated && "text-[#07C160]")}>
+				<span className={twJoin("text-wechatTab", MY.activated && "text-[#07C160]")}>
 					{t("wechatPage.bottomNavbar.me")}
 				</span>
 			</canBeDetected.div>

@@ -2,6 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+/*
+ * 微信正文基准字号。对齐 WeUI @weuiCellFontSize = 17px。
+ * 没有显式 text-* 类的文字（会话昵称、导航栏标题、列表项主文字等）
+ * 都从这里继承，行高走 preflight 的 1.6。
+ */
+body {
+  font-size: 17px;
+}
+
 img {
   @apply select-none;
   -webkit-user-drag: none;

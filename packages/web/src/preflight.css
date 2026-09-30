@@ -27,7 +27,7 @@
 */
 
 html {
-  line-height: 1.5; /* 1 */
+  line-height: 1.6; /* 1 — 对齐 WeUI base/reset.less 的 body line-height */
   -webkit-text-size-adjust: 100%; /* 2 */
   -moz-tab-size: 4; /* 3 */
   tab-size: 4; /* 3 */

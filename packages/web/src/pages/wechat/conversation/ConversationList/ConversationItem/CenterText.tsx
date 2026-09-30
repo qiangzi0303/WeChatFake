@@ -11,8 +11,8 @@ type Props = {
 const CenterText = ({ extraClassName, upperText, simpleContent }: Props) => {
 	return (
 		<>
-			{upperText && <div className={"m-auto text-black/50 text-xs"}>{upperText}</div>}
-			<div className={twMerge("m-auto text-black/50 text-xs", extraClassName)}>
+			{upperText && <div className={"m-auto text-black/30 text-wechatTips"}>{upperText}</div>}
+			<div className={twMerge("m-auto text-black/30 text-wechatTips", extraClassName)}>
 				<div>{simpleContent}</div>
 			</div>
 		</>

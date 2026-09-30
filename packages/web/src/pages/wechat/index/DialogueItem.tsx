@@ -89,10 +89,10 @@ const DialogueItem = ({ itemId, className }: Props) => {
 			<div className="ml-3 flex flex-1 flex-col space-y-1 overflow-hidden">
 				<div className="flex items-center justify-between">
 					<span className="font-normal">{remark ?? nickname}</span>
-					<span className="text-gray-400 text-xs">{lastMessageTime}</span>
+					<span className="text-black/30 text-wechatTips">{lastMessageTime}</span>
 				</div>
 				<div className="flex items-center">
-					<span className="flex-1 overflow-hidden text-ellipsis whitespace-nowrap text-gray-400 text-sm">
+					<span className="flex-1 overflow-hidden text-ellipsis whitespace-nowrap text-black/55 text-wechatTips">
 						{lastMessage}
 					</span>
 					{isMuted && <img className="w-4" src={MUTED_SVG} />}

@@ -3,6 +3,37 @@ export default {
 	content: ["./index.html", "./src/**/*.{ts,js,jsx,tsx}"],
 	theme: {
 		extend: {
+			// 字体栈对齐 WeUI（src/style/base/variable/global.less）：
+			// @weuiFontEN: system-ui, -apple-system, "Helvetica Neue"
+			// @weuiFontCN: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei"
+			// WeUI 自身只挂了 EN 段、靠 system-ui 回落中文，但 Android WebView 上
+			// 部分定制 ROM 的 system-ui 不稳，所以显式补齐主流 ROM 的中文字体。
+			fontFamily: {
+				sans: [
+					"system-ui",
+					"-apple-system",
+					'"Helvetica Neue"',
+					'"PingFang SC"',
+					'"HarmonyOS Sans SC"',
+					"MiSans",
+					'"Source Han Sans SC"',
+					'"Noto Sans CJK SC"',
+					'"Hiragino Sans GB"',
+					'"Microsoft YaHei"',
+					"sans-serif",
+					'"Apple Color Emoji"',
+					'"Segoe UI Emoji"',
+					'"Noto Color Emoji"',
+				],
+			},
+			fontSize: {
+				// 微信正文号，WeUI @weuiCellFontSize / navbar item 均为 17px
+				wechat: ["17px", "1.41176"],
+				// WeUI @weuiCellTipsFontSize
+				wechatTips: ["14px", "1.6"],
+				// WeUI .weui-tabbar__label
+				wechatTab: ["10px", "1.4"],
+			},
 			colors: {
 				antDaybreakBlue: {
 					1: "#e6f4ff",

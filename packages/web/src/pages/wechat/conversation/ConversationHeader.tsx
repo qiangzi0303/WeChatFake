@@ -34,7 +34,7 @@ const ConversationHeader = () => {
 					{unreadCount.count}
 				</canBeDetected.div>
 			</div>
-			<div className="flex items-center justify-center">
+			<div className="flex items-center justify-center text-wechat">
 				{friendProfile.remark ?? friendProfile.nickname}
 			</div>
 			<div className="flex items-center justify-end">
