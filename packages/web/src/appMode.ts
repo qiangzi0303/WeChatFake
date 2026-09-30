@@ -8,4 +8,4 @@
  */
 export const isAppMode =
 	import.meta.env.VITE_APP_MODE === "true" ||
-	typeof window !== "undefined" && !!(window as unknown as { Capacitor?: unknown }).Capacitor;
+	(typeof window !== "undefined" && !!(window as unknown as { Capacitor?: unknown }).Capacitor);

@@ -13,19 +13,15 @@ import { generateFakeUser } from "@/faker/wechat/user/generator";
 import { setConversationListValue } from "@/stateV2/conversation";
 import { getDialogueListValueSnapshot, setDialogueListValue } from "@/stateV2/dialogueList";
 import {
-	getAllProfilesValueSnapshot,
 	type IStateProfile,
+	getAllProfilesValueSnapshot,
 	setAllProfilesValue,
 	setProfileValue,
 } from "@/stateV2/profile";
 import { getFileMD5 } from "@/utils";
 import { nanoid } from "nanoid";
-import type { IParsedMessage, IParseResult } from "./parser";
-import {
-	formatDialogueTime,
-	summarizeMessage,
-	transformToConversationList,
-} from "./transform";
+import type { IParseResult, IParsedMessage } from "./parser";
+import { formatDialogueTime, summarizeMessage, transformToConversationList } from "./transform";
 
 /** 图片类附件的扩展名 */
 const IMAGE_EXTENSIONS = ["jpg", "jpeg", "png", "gif", "webp", "bmp"];
@@ -63,10 +59,7 @@ export interface IImportResult {
 }
 
 /** 把用到的附件存进 IndexedDB，返回「文件名 -> MD5」映射 */
-const saveAttachments = async (
-	messages: IParsedMessage[],
-	attachments: Record<string, File>,
-) => {
+const saveAttachments = async (messages: IParsedMessage[], attachments: Record<string, File>) => {
 	const hashMap: Record<string, string> = {};
 	const missing: string[] = [];
 

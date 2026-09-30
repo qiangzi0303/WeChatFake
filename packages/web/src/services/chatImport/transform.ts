@@ -135,9 +135,7 @@ export const transformToConversationList = (
 				break;
 			}
 			case EParsedMessageType.image: {
-				const hash = message.attachmentName
-					? attachmentHashMap[message.attachmentName]
-					: undefined;
+				const hash = message.attachmentName ? attachmentHashMap[message.attachmentName] : undefined;
 				if (hash) {
 					result.push({ ...base, type: EConversationType.image, imageInfo: hash });
 				} else {
@@ -151,9 +149,7 @@ export const transformToConversationList = (
 				break;
 			}
 			case EParsedMessageType.video: {
-				const hash = message.attachmentName
-					? attachmentHashMap[message.attachmentName]
-					: undefined;
+				const hash = message.attachmentName ? attachmentHashMap[message.attachmentName] : undefined;
 				if (hash) {
 					result.push({ ...base, type: EConversationType.video, videoInfo: hash });
 				} else {

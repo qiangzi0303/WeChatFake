@@ -40,4 +40,3 @@ const Screen = () => {
 };
 
 export default memo(Screen);
-

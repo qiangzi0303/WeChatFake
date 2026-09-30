@@ -139,7 +139,6 @@ export const parseContentLine = (
 	return { type: EParsedMessageType.text, content: line };
 };
 
-
 /** 昵称行形如 `·强子`，前缀可能是 ·、•、· 等多种间隔号 */
 const SPEAKER_PREFIX = /^[·•‧・]\s*(.+)$/;
 
