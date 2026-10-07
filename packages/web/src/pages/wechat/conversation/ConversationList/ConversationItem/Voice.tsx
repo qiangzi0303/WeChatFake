@@ -21,7 +21,7 @@ const Voice = ({ senderId, upperText, duration, role, isRead, showStt, stt }: Pr
 			<CommonBlock
 				senderId={senderId}
 				upperText={upperText}
-				innerBlockClassName="w-full group-[.friend]:bg-white group-[.mine]:bg-[#8CE97F] group-[.friend]:before:bg-white group-[.mine]:before:bg-[#8CE97F]"
+				innerBlockClassName="w-full group-[.friend]:bg-white group-[.mine]:bg-wechatLightGreen-3 group-[.friend]:before:bg-white group-[.mine]:before:bg-wechatLightGreen-3"
 				blockStyle={{
 					width: `${duration <= 10 ? 30 + duration * 2.2 : 52}%`,
 					maxWidth: "52%",

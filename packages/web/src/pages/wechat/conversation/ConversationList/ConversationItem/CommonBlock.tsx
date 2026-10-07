@@ -64,7 +64,7 @@ const CommonBlock = <P extends AnyObject>({
 
 	return (
 		<>
-			{upperText && <div className="m-auto text-black/30 text-wechatTips">{upperText}</div>}
+			{upperText && <div className="m-auto text-black/30 text-wechatTimeDivider">{upperText}</div>}
 			<div
 				className={twMerge(
 					"relative flex max-w-[85%] space-x-3 group-[.mine]:ml-auto group-[.mine]:flex-row-reverse group-[.mine]:space-x-reverse",
@@ -88,7 +88,10 @@ const CommonBlock = <P extends AnyObject>({
             }
           `}
 					className={twMerge(
-						"group-[.friend]:before:-left-[1px] group-[.mine]:before:-right-[1px] group-[.mine]:before:-rotate-[135deg] relative max-w-[85%] break-words rounded p-[10px] before:absolute before:top-[6px] before:h-7 before:w-7 before:rounded-sm group-[.friend]:before:rotate-45",
+						// 气泡尺寸对齐真微信：正文 17px/行高 24px，上下各 8px 内边距
+						// 得到单行 40px（此前 p-[10px] 为 44px，偏高）；左右 12px。
+						// 箭头从 28px 收到 12px —— 原尺寸接近气泡整高，明显过大。
+						"group-[.friend]:before:-left-[3px] group-[.mine]:before:-right-[3px] group-[.mine]:before:-rotate-[135deg] relative max-w-[85%] break-words rounded-[6px] px-3 py-2 before:absolute before:top-[12px] before:h-3 before:w-3 group-[.friend]:before:rotate-45",
 						innerBlockClassName,
 					)}
 					{...(innerBlockProps as P)}

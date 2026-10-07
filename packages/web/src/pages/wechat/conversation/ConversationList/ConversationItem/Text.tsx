@@ -19,7 +19,7 @@ const Text = ({ upperText, senderId, textContent, referenceId, conversationItemI
 			<CommonBlock
 				upperText={upperText}
 				senderId={senderId}
-				innerBlockClassName="group-[.friend]:bg-white group-[.mine]:bg-[#8CE97F] group-[.friend]:before:bg-white group-[.mine]:before:bg-[#8CE97F]"
+				innerBlockClassName="group-[.friend]:bg-white group-[.mine]:bg-wechatLightGreen-3 group-[.friend]:before:bg-white group-[.mine]:before:bg-wechatLightGreen-3"
 			>
 				<SlateText content={textContent} />
 			</CommonBlock>

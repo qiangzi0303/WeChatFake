@@ -89,7 +89,7 @@ const DialogueItem = ({ itemId, className }: Props) => {
 			<div className="ml-3 flex flex-1 flex-col space-y-1 overflow-hidden">
 				<div className="flex items-center justify-between">
 					<span className="font-normal">{remark ?? nickname}</span>
-					<span className="text-black/30 text-wechatTips">{lastMessageTime}</span>
+					<span className="text-black/30 text-wechatListTime">{lastMessageTime}</span>
 				</div>
 				<div className="flex items-center">
 					<span className="flex-1 overflow-hidden text-ellipsis whitespace-nowrap text-black/55 text-wechatTips">

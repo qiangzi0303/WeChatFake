@@ -31,6 +31,11 @@ export default {
 				wechat: ["17px", "1.41176"],
 				// WeUI @weuiCellTipsFontSize
 				wechatTips: ["14px", "1.6"],
+				// 聊天页内的时间分割与系统提示。真微信这里比列表摘要(14px)
+				// 小一号，两者此前共用 wechatTips 导致时间偏大。
+				wechatTimeDivider: ["12px", "1.4"],
+				// 会话列表右上角的时间，同样小于摘要字号
+				wechatListTime: ["12px", "1.4"],
 				// WeUI .weui-tabbar__label
 				wechatTab: ["10px", "1.4"],
 			},
