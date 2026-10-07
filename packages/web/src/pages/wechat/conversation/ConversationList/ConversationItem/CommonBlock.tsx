@@ -83,15 +83,26 @@ const CommonBlock = <P extends AnyObject>({
 				/>
 				<InnerBlockComponent
 					css={css`
-            &::before {
-              clip-path: polygon(0% 50%, 50% 100%, 0% 100%);
+            /* 箭头形状按参考截图像素测量：主体右缘 x=668 恒定，
+               外凸段 y=164~186（约 23px 高）、最远 x=677（外凸 9px），
+               即高宽比约 2.5:1 的瘦长尖角，且垂直居中于气泡主体。
+               旧实现用 12x12 正方形旋转 45° 裁切，被 45° 锁死成等宽等高，
+               做不出这个比例，故改为显式尺寸 + 指向性 clip-path。 */
+            .friend &::before {
+              clip-path: polygon(100% 0, 0 50%, 100% 100%);
+            }
+            .mine &::before {
+              clip-path: polygon(0 0, 100% 50%, 0 100%);
             }
           `}
 					className={twMerge(
 						// 气泡尺寸对齐真微信：正文 17px/行高 24px，上下各 8px 内边距
 						// 得到单行 40px（此前 p-[10px] 为 44px，偏高）；左右 12px。
-						// 箭头从 28px 收到 12px —— 原尺寸接近气泡整高，明显过大。
-						"group-[.friend]:before:-left-[3px] group-[.mine]:before:-right-[3px] group-[.mine]:before:-rotate-[135deg] relative max-w-[85%] break-words rounded-[6px] px-3 py-2 before:absolute before:top-[12px] before:h-3 before:w-3 group-[.friend]:before:rotate-45",
+						// 箭头 5x13px、外凸 5px，比例取自参考截图的 9px/23px。
+						// 垂直位置锚在头像中心：头像 h-10(40px) 顶部对齐，中心恒为
+						// 容器顶部下方 20px，故用 top-5 + -translate-y-1/2 让箭头
+						// 中心落在 20px。单行气泡与气泡中线重合，多行时仍对准头像。
+						"group-[.friend]:before:-left-[5px] group-[.mine]:before:-right-[5px] relative max-w-[85%] break-words rounded-[6px] px-3 py-2 before:absolute before:top-5 before:h-[13px] before:w-[5px] before:-translate-y-1/2",
 						innerBlockClassName,
 					)}
 					{...(innerBlockProps as P)}
