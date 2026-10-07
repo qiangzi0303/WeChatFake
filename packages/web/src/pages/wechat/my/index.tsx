@@ -19,7 +19,9 @@ import { myProfileAtom } from "@/stateV2/profile";
 import BottomNavbar, { useToggleNavbarActivated } from "@/wechatComponents/BottomNavbar";
 import List from "@/wechatComponents/List";
 import { EditOutlined, ImportOutlined } from "@ant-design/icons";
+import { useLongPress } from "ahooks";
 import { useAtomValue } from "jotai";
+import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import CircularNotchSVG from "./assets/circular-notch.svg?react";
 
@@ -30,8 +32,15 @@ const My = () => {
 	const { t } = useTranslation();
 	useToggleNavbarActivated(EBottomNavBars.MY);
 
+	// App 模式下「导入聊天记录 / 编辑模式」默认隐藏，长按本页切换显隐，
+	// 避免这两个开发入口常驻在高仿界面里。
+	const [devEntriesVisible, setDevEntriesVisible] = useState(false);
+	const pageRef = useRef<HTMLDivElement>(null);
+
+	useLongPress(() => setDevEntriesVisible((v) => !v), pageRef);
+
 	return (
-		<>
+		<div ref={pageRef} className="flex min-h-0 flex-1 flex-col">
 			<canBeDetected.div
 				className="flex cursor-pointer flex-col pt-12 pr-3 pb-6 pl-9"
 				onClick={() => {
@@ -94,7 +103,7 @@ const My = () => {
 					<List.Item withJump icon={<Setting_Outlined_SVG fill="#2A7FCB" />}>
 						{t("wechatPage.my.settings")}
 					</List.Item>
-					{isAppMode && (
+					{isAppMode && devEntriesVisible && (
 						<>
 							<ImportChatRecord
 								renderTrigger={(openPicker) => (
@@ -117,7 +126,7 @@ const My = () => {
 				</List>
 			</div>
 			<BottomNavbar />
-		</>
+		</div>
 	);
 };
 
