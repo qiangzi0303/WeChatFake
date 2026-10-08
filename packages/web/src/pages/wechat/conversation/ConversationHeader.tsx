@@ -34,8 +34,9 @@ const ConversationHeader = () => {
 					{unreadCount.count}
 				</canBeDetected.div>
 			</div>
-			{/* 导航栏标题加粗：真微信此处为中等字重，字号仍是正文的 17px */}
-			<div className="flex items-center justify-center truncate text-wechat font-medium">
+			{/* 导航栏标题：字号与气泡正文同为 16px（微信适老化指南 Android 基准），
+			    两者观感差异来自字重 —— 标题 Semibold(600)、气泡正文 Regular。 */}
+			<div className="flex items-center justify-center truncate text-wechat font-semibold">
 				{friendProfile.remark ?? friendProfile.nickname}
 			</div>
 			<div className="flex items-center justify-end">

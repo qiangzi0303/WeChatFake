@@ -3,12 +3,18 @@
 @tailwind utilities;
 
 /*
- * 微信正文基准字号。对齐 WeUI @weuiCellFontSize = 17px。
+ * 微信正文基准字号。
+ * 出处：微信官方《小程序适老化设计指南》2.1 节
+ * https://developers.weixin.qq.com/miniprogram/design/elderly.html
+ * 该文档明确区分平台：iOS 基准 17px，Android 基准 16px
+ * （标准档 fontSizeSetting = 16、实际展示大小 = 16）。
+ * 本项目经 Capacitor 打包为 Android App，故取 16px；
+ * WeUI 的 @weuiCellFontSize = 17px 是网页控件库值，对应 iOS。
  * 没有显式 text-* 类的文字（会话昵称、导航栏标题、列表项主文字等）
  * 都从这里继承，行高走 preflight 的 1.6。
  */
 body {
-  font-size: 17px;
+  font-size: 16px;
 }
 
 img {

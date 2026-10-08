@@ -27,8 +27,10 @@ export default {
 				],
 			},
 			fontSize: {
-				// 微信正文号，WeUI @weuiCellFontSize / navbar item 均为 17px
-				wechat: ["17px", "1.41176"],
+				// 微信正文号。出处：微信官方《小程序适老化设计指南》2.1 节，
+				// Android 基准 16px（iOS 为 17px）。本项目打包为 Android App。
+				// 导航栏标题与聊天气泡正文同为此号，二者差别在字重不在字号。
+				wechat: ["16px", "1.4"],
 				// WeUI @weuiCellTipsFontSize
 				wechatTips: ["14px", "1.6"],
 				// 聊天页内的时间分割与系统提示。真微信这里比列表摘要(14px)
