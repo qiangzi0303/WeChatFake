@@ -96,7 +96,7 @@ const CommonBlock = <P extends AnyObject>({
             }
           `}
 					className={twMerge(
-						// 气泡尺寸对齐真微信：正文 17px/行高 24px，上下各 8px 内边距
+						// 气泡尺寸对齐真微信：正文 17.5px/行高 24px，上下各 8px 内边距
 						// 得单行 40px（此前 p-[10px] 为 44px，偏高）；左右 12px。
 						// 箭头 5x13px、外凸 5px，比例取自参考截图的 9px/23px。
 						// 垂直位置锚在头像中心：头像 h-10(40px) 顶部对齐，中心恒为

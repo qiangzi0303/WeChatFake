@@ -34,7 +34,7 @@ const ConversationHeader = () => {
 					{unreadCount.count}
 				</canBeDetected.div>
 			</div>
-			{/* 导航栏标题：与气泡正文同为 17px，不加粗（按真机观感定） */}
+			{/* 导航栏标题：与气泡正文同为 17.5px，不加粗（按真机观感定） */}
 			<div className="flex items-center justify-center truncate text-wechat">
 				{friendProfile.remark ?? friendProfile.nickname}
 			</div>
