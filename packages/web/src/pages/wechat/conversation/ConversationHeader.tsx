@@ -34,7 +34,8 @@ const ConversationHeader = () => {
 					{unreadCount.count}
 				</canBeDetected.div>
 			</div>
-			<div className="flex items-center justify-center text-wechat">
+			{/* 导航栏标题加粗：真微信此处为中等字重，字号仍是正文的 17px */}
+			<div className="flex items-center justify-center truncate text-wechat font-medium">
 				{friendProfile.remark ?? friendProfile.nickname}
 			</div>
 			<div className="flex items-center justify-end">
