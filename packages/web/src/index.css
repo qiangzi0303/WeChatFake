@@ -3,17 +3,19 @@
 @tailwind utilities;
 
 /*
- * 微信正文基准字号 = 17.5px。
- * 出处参考：微信官方《小程序适老化设计指南》2.1 节
- * https://developers.weixin.qq.com/miniprogram/design/elderly.html
- * 该文档 iOS 档基准 17px、Android 档 16px；WeUI @weuiCellFontSize 为 17px。
- * 本项目取 17.5px：16px 与 17px 经真机核对均偏小，按观感微调而来，
- * 已不是文档原值，勿按文档改回。半像素在 DPR>=2 的设备上可正常渲染。
- * 没有显式 text-* 类的文字（会话昵称、导航栏标题、列表项主文字等）
- * 都从这里继承，行高走 preflight 的 1.6。
+ * 微信正文基准字号 = 19px。
+ * 背景：App 已在原生侧锁定 WebView textZoom=100（不跟随系统字体档位），
+ * 所以本应用是场上唯一不随系统放大的 app。在系统字体调大的手机上，
+ * 其他 app 的 sp 字号都被放大、本应用的 px 字号不变，于是显得偏小。
+ * 方案 B：保持不跟随系统，但把基准字号整体上调，使其在目标手机上
+ * 与其它 app 目测齐平。此值为真机标定值，与 WeUI/适老化文档已无关，
+ * 需配合真机比对调整，勿按文档改回。
+ * 行高走 preflight 的 1.6。没有显式 text-* 类的文字（会话昵称、
+ * 导航栏标题、列表项主文字等）都从这里继承。
+ * 注意：须与 tailwind.config.js 的 fontSize.wechat 同步。
  */
 body {
-  font-size: 17.5px;
+  font-size: 19px;
 }
 
 img {
