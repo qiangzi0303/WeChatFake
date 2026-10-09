@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>字号诊断</title>
+    <style>
+      /* 刻意复刻项目：body 17.5px，不设 html font-size */
+      body { font-size: 17.5px; margin: 0; padding: 16px; font-family: system-ui, -apple-system, "PingFang SC", sans-serif; }
+      .row { padding: 6px 0; border-bottom: 1px solid #eee; }
+      .k { color: #888; font-size: 12px; }
+      .v { font-size: 15px; word-break: break-all; }
+      .sample-body { /* 继承 body 的 17.5px */ }
+      .sample-rem { font-size: 1rem; }      /* Tailwind text-base 等价，锚定 html 根字号 */
+      .sample-px17 { font-size: 17.5px; }
+      .ruler { height: 100px; width: 100px; background: #04d76a; }
+    </style>
+  </head>
+  <body>
+    <h2 style="font-size:20px;margin:0 0 12px">真机字号诊断</h2>
+    <div id="out"></div>
+    <div class="row">
+      <div class="k">下面这行走 body 继承（项目正文就是这种）</div>
+      <div class="sample-body">微信正文示例文字 ABCfg 中文测试</div>
+    </div>
+    <div class="row">
+      <div class="k">下面这行 font-size:1rem（Tailwind text-base）</div>
+      <div class="sample-rem">微信正文示例文字 ABCfg 中文测试</div>
+    </div>
+    <div class="row">
+      <div class="k">下面这行显式 17.5px</div>
+      <div class="sample-px17">微信正文示例文字 ABCfg 中文测试</div>
+    </div>
+    <div class="row">
+      <div class="k">绿色方块应为物理 100x100 CSS px</div>
+      <div class="ruler"></div>
+    </div>
+    <script>
+      function cs(sel, prop) {
+        var el = document.querySelector(sel);
+        return getComputedStyle(el).getPropertyValue(prop);
+      }
+      var html = document.documentElement;
+      var rows = [
+        ["userAgent", navigator.userAgent],
+        ["devicePixelRatio", window.devicePixelRatio],
+        ["window.innerWidth", window.innerWidth],
+        ["screen.width", screen.width],
+        ["visualViewport.scale", window.visualViewport ? window.visualViewport.scale : "n/a"],
+        ["html computed font-size", getComputedStyle(html).fontSize],
+        ["body computed font-size", cs("body", "font-size")],
+        ["body line-height", cs("body", "line-height")],
+        [".sample-body 实际 font-size", cs(".sample-body", "font-size")],
+        [".sample-rem(1rem) 实际 font-size", cs(".sample-rem", "font-size")],
+        [".sample-px17 实际 font-size", cs(".sample-px17", "font-size")],
+        ["body 实际渲染字体", cs("body", "font-family")],
+      ];
+      var out = document.getElementById("out");
+      out.innerHTML = rows.map(function (r) {
+        return '<div class="row"><div class="k">' + r[0] + '</div><div class="v">' + r[1] + "</div></div>";
+      }).join("");
+    </script>
+  </body>
+</html>
