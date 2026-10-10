@@ -65,7 +65,7 @@ export function mountDiagOverlay() {
 		// TEXT_AUTOSIZING 修复的新包；若仍显示旧值或无此行，说明装的是旧包。
 		const ver = document.createElement("div");
 		ver.style.cssText = "color:#ff0;";
-		ver.textContent = "BUILD-C (bubble-measure-fix)";
+		ver.textContent = "BUILD-D (ant-app-fontsize-fix)";
 		info.appendChild(ver);
 
 		const bar = document.createElement("div");
