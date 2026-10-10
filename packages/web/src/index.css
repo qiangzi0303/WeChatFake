@@ -3,23 +3,18 @@
 @tailwind utilities;
 
 /*
- * 微信正文基准字号 = 20.5px。
- * 背景：App 已在原生侧锁定 WebView textZoom=100（不跟随系统字体档位），
- * 所以本应用是场上唯一不随系统放大的 app。在系统字体调大的手机上，
- * 其他 app 的 sp 字号都被放大、本应用的 px 字号不变，于是显得偏小。
- * 方案 B：保持不跟随系统，但把基准字号整体上调，使其在目标手机上
- * 与其它 app 目测齐平。此值为真机标定值，与 WeUI/适老化文档已无关，
- * 需配合真机比对调整，勿按文档改回。
- * 演进：17.5 -> 19 -> 20.5，均为小幅递增，前者肉眼难辨故一次加到位。
- * 结论记录：真机实测正文 computed font-size 与 body 一致（19px 时实测即 19px，
- * 未被任何层级压缩），且中文字体与真微信同为系统黑体，故"偏小"只源于
- * 基准 px 值本身不足，非字体、非缩放问题。
+ * 微信正文基准字号 = 17px（真机标定值）。
+ * 背景：App 已在原生侧锁定 WebView textZoom=100（不跟随系统字体档位）。
+ * 关键修复：App 模式下 <Screen /> 被包在 antd 的 .ant-app 容器内，而 antd
+ * 给 .ant-app 写死 font-size:14px，导致聊天正文被盖死、调 body 无效（PC 三栏
+ * 布局里 Screen 不在 .ant-app 内，故 PC 可调手机不可调）。已在 App.tsx 给
+ * .ant-app 加 font-size:inherit 交回 body 控制。此值经真机比对定为 17px。
  * 行高走 preflight 的 1.6。没有显式 text-* 类的文字（会话昵称、
  * 导航栏标题、列表项主文字等）都从这里继承。
  * 注意：须与 tailwind.config.js 的 fontSize.wechat 同步。
  */
 body {
-  font-size: 20.5px;
+  font-size: 17px;
   /*
    * 禁止 WebView/浏览器的文本自动调整（Text Autosizing）。
    * Android WebView 默认布局算法 TEXT_AUTOSIZING 会按容器宽度自行重算正文

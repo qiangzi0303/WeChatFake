@@ -8,7 +8,6 @@ import React, { useState } from "react";
 import ReactDOM from "react-dom/client";
 import { RouterProvider, createHashRouter } from "react-router-dom";
 import { initDBImagesCacheStore } from "./db";
-import { mountDiagOverlay } from "./diagOverlay";
 import Splash from "./pages/splash";
 import { routes } from "./router/index.tsx";
 import { mainStore } from "./stateV2/store.ts";
@@ -18,7 +17,6 @@ import { backendHealthCheck } from "./utils.ts";
 initDayjs();
 initDBImagesCacheStore();
 backendHealthCheck();
-mountDiagOverlay();
 
 const router = createHashRouter(routes);
 

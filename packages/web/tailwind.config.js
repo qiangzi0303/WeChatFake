@@ -27,16 +27,14 @@ export default {
 				],
 			},
 			fontSize: {
-				// 微信正文号 = 20.5px（真机标定值）。
-				// 背景：App 原生侧锁定 WebView textZoom=100 不跟随系统字体，
-				// 为在系统字体调大的手机上与其它 app 目测齐平，整体上调基准，
-				// 已与 WeUI/适老化文档无关，须配合真机比对，勿按文档改回。
+				// 微信正文号 = 17px（真机标定值）。
+				// App 原生侧锁定 WebView textZoom=100 不跟随系统字体。
+				// 注意：App 模式下 antd .ant-app 会把容器字号写死 14px，已在
+				// App.tsx 用 font-size:inherit 交回 body 控制，否则调此值无效。
 				// 须与 src/index.css 的 body font-size 同步。
-				// 行高 28px（20.5×1.366≈28），随字号等比上调保持气泡观感。
-				// 演进 17.5 -> 19 -> 20.5；真机实测确认正文 computed font-size
-				// 与 body 一致、字体同为系统黑体，故偏小仅源于基准 px 不足。
+				// 行高 23px（17×1.366≈23），随字号等比保持气泡观感。
 				// 导航栏标题与聊天气泡正文同为此号、同为常规字重。
-				wechat: ["20.5px", "28px"],
+				wechat: ["17px", "23px"],
 				// 原 WeUI @weuiCellTipsFontSize=14，随正文等比上调。
 				wechatTips: ["16px", "1.6"],
 				// 聊天页内的时间分割与系统提示，小于列表摘要字号。
