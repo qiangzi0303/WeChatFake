@@ -204,3 +204,76 @@ export const transformToConversationList = (
 
 	return result;
 };
+
+/**
+ * 为一条会话消息生成「内容指纹」，用于多次导入时判重。
+ *
+ * 不能用 id：id 是每次导入时 nanoid 随机生成的，同一条消息两次导入 id 不同。
+ * 指纹由「时间戳 + 角色 + 类型 + 关键内容」组成，同一条消息无论导入几次都一致。
+ * upperText 不参与指纹——它只是展示用的时间标签，合并重排后会重新计算。
+ */
+export const fingerprintConversationItem = (item: TConversationItem): string => {
+	const head = `${item.sendTimestamp ?? 0}|${item.role}|${item.type}`;
+	switch (item.type) {
+		case EConversationType.text:
+			return `${head}|${JSON.stringify(item.textContent)}`;
+		case EConversationType.image:
+			return `${head}|${item.imageInfo}`;
+		case EConversationType.video:
+			return `${head}|${item.videoInfo}`;
+		case EConversationType.voice:
+			return `${head}|${item.duration}`;
+		case EConversationType.transfer:
+			return `${head}|${item.amount}|${item.note ?? ""}`;
+		case EConversationType.redPacket:
+			return `${head}|${item.amount}|${item.note ?? ""}`;
+		case EConversationType.centerText:
+			return `${head}|${item.simpleContent}`;
+		default:
+			return `${head}|${JSON.stringify(item)}`;
+	}
+};
+
+/**
+ * 把已有会话和新导入的会话合并：按时间排序、去掉重复、保留不重复的。
+ *
+ * 用于同一个人的聊天记录多次导入——合并后按 sendTimestamp 升序排列，
+ * 内容指纹相同的只保留一条（优先保留已有的），再统一重算气泡上方的时间标签。
+ */
+export const mergeConversationLists = (
+	existing: TConversationItem[],
+	incoming: TConversationItem[],
+): TConversationItem[] => {
+	const seen = new Set<string>();
+	const merged: TConversationItem[] = [];
+	// 已有的先入集合，确保重复时保留已有条目
+	for (const item of [...existing, ...incoming]) {
+		const key = fingerprintConversationItem(item);
+		if (seen.has(key)) continue;
+		seen.add(key);
+		merged.push(item);
+	}
+
+	// 按时间升序；缺时间戳的排到最后，保持相对顺序稳定
+	merged.sort((a, b) => (a.sendTimestamp ?? Number.MAX_SAFE_INTEGER) - (b.sendTimestamp ?? Number.MAX_SAFE_INTEGER));
+
+	return recomputeUpperTexts(merged);
+};
+
+/**
+ * 重算每条消息气泡上方的时间标签。
+ * 合并后消息顺序变了，原来的 upperText 不再准确，按相邻间隔重新决定是否显示。
+ */
+export const recomputeUpperTexts = (items: TConversationItem[]): TConversationItem[] => {
+	let lastTimestamp: number | undefined;
+	return items.map((item) => {
+		const ts = item.sendTimestamp;
+		if (ts === undefined) return { ...item, upperText: undefined };
+		const needUpperText =
+			lastTimestamp === undefined ||
+			dayjs(ts).diff(lastTimestamp, "minute") >= UPPER_TEXT_GAP_MINUTES;
+		lastTimestamp = ts;
+		return { ...item, upperText: needUpperText ? formatUpperText(ts) : undefined };
+	});
+};
+

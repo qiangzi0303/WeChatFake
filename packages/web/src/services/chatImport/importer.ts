@@ -10,7 +10,7 @@
 import { hashAssetsDB } from "@/db";
 import { MYSELF_ID } from "@/faker/wechat/user";
 import { generateFakeUser } from "@/faker/wechat/user/generator";
-import { setConversationListValue } from "@/stateV2/conversation";
+import { setConversationListValue, getConversationListValueSnapshot, type TConversationItem } from "@/stateV2/conversation";
 import { getDialogueListValueSnapshot, setDialogueListValue } from "@/stateV2/dialogueList";
 import {
 	type IStateProfile,
@@ -21,7 +21,11 @@ import {
 import { getFileMD5 } from "@/utils";
 import { nanoid } from "nanoid";
 import type { IParseResult, IParsedMessage } from "./parser";
-import { formatDialogueTime, summarizeMessage, transformToConversationList } from "./transform";
+import {
+	formatDialogueTime,
+	mergeConversationLists,
+	transformToConversationList,
+} from "./transform";
 
 /** 图片类附件的扩展名 */
 const IMAGE_EXTENSIONS = ["jpg", "jpeg", "png", "gif", "webp", "bmp"];
@@ -110,10 +114,39 @@ const resolveFriendProfile = (friendSpeaker: string, targetFriendId?: IStateProf
 	return profile.id;
 };
 
+/** 用一条会话消息生成对话列表的摘要文本 */
+const summarizeConversationItem = (item: TConversationItem | undefined): string => {
+	if (!item) return "";
+	switch (item.type) {
+		case "text": {
+			// slate 结构，拼出纯文本
+			const text = item.textContent
+				.map((node) => ("children" in node ? node.children.map((c) => ("text" in c ? c.text : "")).join("") : ""))
+				.join(" ")
+				.trim();
+			return text.replace(/\n/g, " ");
+		}
+		case "image":
+			return "[图片]";
+		case "video":
+			return "[视频]";
+		case "voice":
+			return "[语音]";
+		case "transfer":
+			return "[转账]";
+		case "redPacket":
+			return "[红包]";
+		case "centerText":
+			return item.simpleContent || "[消息]";
+		default:
+			return "[消息]";
+	}
+};
+
 /** 更新对话列表里的那一条，没有则新建 */
-const upsertDialogue = (friendId: IStateProfile["id"], lastMessage: IParsedMessage | undefined) => {
-	const summary = lastMessage ? summarizeMessage(lastMessage) : "";
-	const time = lastMessage ? formatDialogueTime(lastMessage.timestamp) : "";
+const upsertDialogue = (friendId: IStateProfile["id"], lastItem: TConversationItem | undefined) => {
+	const summary = summarizeConversationItem(lastItem);
+	const time = lastItem?.sendTimestamp ? formatDialogueTime(lastItem.sendTimestamp) : "";
 	const existed = getDialogueListValueSnapshot().find((v) => v.friendId === friendId);
 
 	if (existed) {
@@ -162,15 +195,21 @@ export const importChatRecord = async (payload: IImportPayload): Promise<IImport
 		defaultRedPacketAmount: redPacketAmount,
 	});
 
-	setConversationListValue(friendId, (prev) =>
-		overwrite ? conversationList : [...prev, ...conversationList],
-	);
-	upsertDialogue(friendId, messages[messages.length - 1]);
+	// 覆盖模式直接用新列表；追加模式与已有记录合并——按时间排序、去重、重算时间标签
+	const existing = overwrite ? [] : getConversationListValueSnapshot(friendId);
+	const finalList = overwrite
+		? conversationList
+		: mergeConversationLists(existing, conversationList);
+	// 实际新增条数 = 合并后比原有多出来的数量（去重后重复的不计入）
+	const addedCount = overwrite ? finalList.length : finalList.length - existing.length;
+
+	setConversationListValue(friendId, () => finalList);
+	upsertDialogue(friendId, finalList[finalList.length - 1]);
 
 	return {
 		friendId,
 		friendName: friendSpeaker,
-		messageCount: conversationList.length,
+		messageCount: addedCount,
 		imageCount: Object.keys(hashMap).length,
 		missingAttachments: missing,
 	};
