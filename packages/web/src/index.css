@@ -20,6 +20,15 @@
  */
 body {
   font-size: 20.5px;
+  /*
+   * 禁止 WebView/浏览器的文本自动调整（Text Autosizing）。
+   * Android WebView 默认布局算法 TEXT_AUTOSIZING 会按容器宽度自行重算正文
+   * 字号，导致改 CSS font-size 后 getComputedStyle 是新值、屏幕渲染却不变
+   * （PC 可调、装到手机就失效）。原生侧已改用 NORMAL 布局算法，这里再从
+   * 网页侧上一道保险，两处同时生效才能让 CSS px 成为唯一字号来源。
+   */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 img {
