@@ -3,10 +3,10 @@ import {
 	type IFolderContent,
 	type IParseResult,
 	importChatRecord,
-	isZipFile,
+	isEmlFile,
 	parseChatRecord,
+	readEmlFile,
 	readSelectedFiles,
-	readZipFile,
 } from "@/services/chatImport";
 import { getAllProfilesValueSnapshot } from "@/stateV2/profile";
 import { ImportOutlined } from "@ant-design/icons";
@@ -16,13 +16,13 @@ import PreviewStep from "./PreviewStep";
 
 type Props = {
 	/**
-	 * 自定义触发器。收到的回调分别拉起「选文件夹」和「选 zip 压缩包」。
+	 * 自定义触发器。收到的回调分别拉起「选文件夹」「选文件」「选 eml」。
 	 * 移动端用微信风格的列表行，桌面端用默认按钮。
 	 */
 	renderTrigger?: (actions: {
 		openPicker: () => void;
 		openFilesPicker: () => void;
-		openZipPicker: () => void;
+		openEmlPicker: () => void;
 	}) => ReactNode;
 };
 
@@ -30,7 +30,7 @@ const ImportChatRecord = ({ renderTrigger }: Props) => {
 	const { message } = App.useApp();
 	const inputRef = useRef<HTMLInputElement>(null);
 	const filesInputRef = useRef<HTMLInputElement>(null);
-	const zipInputRef = useRef<HTMLInputElement>(null);
+	const emlInputRef = useRef<HTMLInputElement>(null);
 	const [open, setOpen] = useState(false);
 	const [folder, setFolder] = useState<IFolderContent>();
 	const [parseResult, setParseResult] = useState<IParseResult>();
@@ -101,31 +101,31 @@ const ImportChatRecord = ({ renderTrigger }: Props) => {
 		}
 	};
 
-	const handleZipSelected = async (files: FileList | null) => {
+	const handleEmlSelected = async (files: FileList | null) => {
 		const file = files?.[0];
 		if (!file) return;
 		try {
-			if (!isZipFile(file.name)) {
-				message.error("请选择 .zip 格式的压缩包");
+			if (!isEmlFile(file.name)) {
+				message.error("请选择 .eml 格式的聊天记录文件");
 				return;
 			}
-			const content = await readZipFile(file);
+			const content = await readEmlFile(file);
 			acceptContent(content);
 		} catch (error) {
 			message.error(error instanceof Error ? error.message : "读取失败");
 		} finally {
-			if (zipInputRef.current) zipInputRef.current.value = "";
+			if (emlInputRef.current) emlInputRef.current.value = "";
 		}
 	};
 
 	const openPicker = () => inputRef.current?.click();
 	const openFilesPicker = () => filesInputRef.current?.click();
-	const openZipPicker = () => zipInputRef.current?.click();
+	const openEmlPicker = () => emlInputRef.current?.click();
 
 	return (
 		<>
 			{renderTrigger ? (
-				renderTrigger({ openPicker, openFilesPicker, openZipPicker })
+				renderTrigger({ openPicker, openFilesPicker, openEmlPicker })
 			) : (
 				<>
 					<Button icon={<ImportOutlined />} onClick={openPicker}>
@@ -134,8 +134,8 @@ const ImportChatRecord = ({ renderTrigger }: Props) => {
 					<Button icon={<ImportOutlined />} onClick={openFilesPicker} className="ml-2">
 						选文件（txt+图片）
 					</Button>
-					<Button icon={<ImportOutlined />} onClick={openZipPicker} className="ml-2">
-						导入 zip
+					<Button icon={<ImportOutlined />} onClick={openEmlPicker} className="ml-2">
+						导入 eml
 					</Button>
 				</>
 			)}
@@ -157,11 +157,11 @@ const ImportChatRecord = ({ renderTrigger }: Props) => {
 				onChange={(ev) => handleFilesSelected(ev.target.files)}
 			/>
 			<input
-				ref={zipInputRef}
+				ref={emlInputRef}
 				type="file"
 				className="hidden"
-				accept=".zip,application/zip,application/x-zip-compressed"
-				onChange={(ev) => handleZipSelected(ev.target.files)}
+				accept=".eml,message/rfc822"
+				onChange={(ev) => handleEmlSelected(ev.target.files)}
 			/>
 			<Modal
 				open={open}

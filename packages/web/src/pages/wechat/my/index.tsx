@@ -106,7 +106,7 @@ const My = () => {
 					{isAppMode && devEntriesVisible && (
 						<>
 							<ImportChatRecord
-								renderTrigger={({ openPicker, openFilesPicker, openZipPicker }) => (
+								renderTrigger={({ openPicker, openFilesPicker, openEmlPicker }) => (
 									<>
 										<List.Item
 											icon={<ImportOutlined className="text-[#576b95] text-lg" />}
@@ -122,9 +122,9 @@ const My = () => {
 										</List.Item>
 										<List.Item
 											icon={<ImportOutlined className="text-[#576b95] text-lg" />}
-											onClick={openZipPicker}
+											onClick={openEmlPicker}
 										>
-											导入聊天记录（zip 压缩包）
+											导入聊天记录（eml 文件）
 										</List.Item>
 									</>
 								)}
