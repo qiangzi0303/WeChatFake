@@ -27,22 +27,24 @@ export default {
 				],
 			},
 			fontSize: {
-				// 微信正文号 = 19px（真机标定值）。
+				// 微信正文号 = 20.5px（真机标定值）。
 				// 背景：App 原生侧锁定 WebView textZoom=100 不跟随系统字体，
 				// 为在系统字体调大的手机上与其它 app 目测齐平，整体上调基准，
 				// 已与 WeUI/适老化文档无关，须配合真机比对，勿按文档改回。
 				// 须与 src/index.css 的 body font-size 同步。
-				// 行高 26px（19×1.368≈26），随字号等比上调以保持气泡观感。
+				// 行高 28px（20.5×1.366≈28），随字号等比上调保持气泡观感。
+				// 演进 17.5 -> 19 -> 20.5；真机实测确认正文 computed font-size
+				// 与 body 一致、字体同为系统黑体，故偏小仅源于基准 px 不足。
 				// 导航栏标题与聊天气泡正文同为此号、同为常规字重。
-				wechat: ["19px", "26px"],
+				wechat: ["20.5px", "28px"],
 				// 原 WeUI @weuiCellTipsFontSize=14，随正文等比上调。
-				wechatTips: ["15px", "1.6"],
+				wechatTips: ["16px", "1.6"],
 				// 聊天页内的时间分割与系统提示，小于列表摘要字号。
-				wechatTimeDivider: ["13px", "1.4"],
+				wechatTimeDivider: ["14px", "1.4"],
 				// 会话列表右上角的时间，同样小于摘要字号。
-				wechatListTime: ["13px", "1.4"],
+				wechatListTime: ["14px", "1.4"],
 				// 原 WeUI .weui-tabbar__label=10，随整体等比上调。
-				wechatTab: ["11px", "1.4"],
+				wechatTab: ["12px", "1.4"],
 			},
 			colors: {
 				antDaybreakBlue: {
