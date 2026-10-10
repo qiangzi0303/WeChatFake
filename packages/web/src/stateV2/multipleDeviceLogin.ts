@@ -11,8 +11,10 @@ export type TStateMultipleDeviceLogin = {
 export const multipleDeviceLoginAtom = atomWithStorage<TStateMultipleDeviceLogin>(
 	"multipleDeviceLogin",
 	{
-		devices: ["iPad"],
-		visible: true,
+		// 默认不显示「iPad微信已登录」等多设备登录提示条。
+		// 需要时可在编辑模式里重新加设备并打开。
+		devices: [],
+		visible: false,
 	},
 );
 
