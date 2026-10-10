@@ -35,10 +35,13 @@ export function mountDiagOverlay() {
 		const htmlFS = getComputedStyle(html).fontSize;
 		const bodyFS = getComputedStyle(document.body).fontSize;
 
-		// 实测聊天气泡正文真实字号：SlateText 的 Editable 渲染为
-		// [data-slate-editor] 容器。取第一个可见的。
+		// 实测聊天气泡正文真实字号。注意：底部输入框 (#conversation-input)
+		// 同样是 [data-slate-editor]，若全局取第一个可见的会量到输入框而非
+		// 气泡（曾量到 14px 的输入框，与 body 完全不相关，误导判断）。故限定
+		// 在聊天记录容器 #conversation-list 内查找。
 		let bubbleFS = "n/a";
-		const editors = document.querySelectorAll('[data-slate-editor="true"]');
+		const listRoot = document.getElementById("conversation-list");
+		const editors = (listRoot ?? document).querySelectorAll('[data-slate-editor="true"]');
 		for (const el of Array.from(editors)) {
 			const r = (el as HTMLElement).getBoundingClientRect();
 			if (r.width > 0 && r.height > 0) {
@@ -62,7 +65,7 @@ export function mountDiagOverlay() {
 		// TEXT_AUTOSIZING 修复的新包；若仍显示旧值或无此行，说明装的是旧包。
 		const ver = document.createElement("div");
 		ver.style.cssText = "color:#ff0;";
-		ver.textContent = "BUILD-B (autosize-fix)";
+		ver.textContent = "BUILD-C (bubble-measure-fix)";
 		info.appendChild(ver);
 
 		const bar = document.createElement("div");
