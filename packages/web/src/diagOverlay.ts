@@ -58,6 +58,13 @@ export function mountDiagOverlay() {
 			`正文基准: ${current.toFixed(1)}px  |  body: ${bodyFS}  |  气泡实测: ${bubbleFS}  |  html: ${htmlFS}`;
 		info.appendChild(line);
 
+		// 构建标记：用于区分手机上装的是哪一版包。看到 BUILD-B 即为含
+		// TEXT_AUTOSIZING 修复的新包；若仍显示旧值或无此行，说明装的是旧包。
+		const ver = document.createElement("div");
+		ver.style.cssText = "color:#ff0;";
+		ver.textContent = "BUILD-B (autosize-fix)";
+		info.appendChild(ver);
+
 		const bar = document.createElement("div");
 		bar.style.cssText = "display:flex;gap:8px;margin-top:6px;align-items:center;";
 
