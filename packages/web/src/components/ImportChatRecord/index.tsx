@@ -19,12 +19,17 @@ type Props = {
 	 * 自定义触发器。收到的回调分别拉起「选文件夹」和「选 zip 压缩包」。
 	 * 移动端用微信风格的列表行，桌面端用默认按钮。
 	 */
-	renderTrigger?: (actions: { openPicker: () => void; openZipPicker: () => void }) => ReactNode;
+	renderTrigger?: (actions: {
+		openPicker: () => void;
+		openFilesPicker: () => void;
+		openZipPicker: () => void;
+	}) => ReactNode;
 };
 
 const ImportChatRecord = ({ renderTrigger }: Props) => {
 	const { message } = App.useApp();
 	const inputRef = useRef<HTMLInputElement>(null);
+	const filesInputRef = useRef<HTMLInputElement>(null);
 	const zipInputRef = useRef<HTMLInputElement>(null);
 	const [open, setOpen] = useState(false);
 	const [folder, setFolder] = useState<IFolderContent>();
@@ -92,6 +97,7 @@ const ImportChatRecord = ({ renderTrigger }: Props) => {
 		} finally {
 			// 清空，否则连续选同一个文件夹不会触发 change
 			if (inputRef.current) inputRef.current.value = "";
+			if (filesInputRef.current) filesInputRef.current.value = "";
 		}
 	};
 
@@ -113,16 +119,20 @@ const ImportChatRecord = ({ renderTrigger }: Props) => {
 	};
 
 	const openPicker = () => inputRef.current?.click();
+	const openFilesPicker = () => filesInputRef.current?.click();
 	const openZipPicker = () => zipInputRef.current?.click();
 
 	return (
 		<>
 			{renderTrigger ? (
-				renderTrigger({ openPicker, openZipPicker })
+				renderTrigger({ openPicker, openFilesPicker, openZipPicker })
 			) : (
 				<>
 					<Button icon={<ImportOutlined />} onClick={openPicker}>
 						导入聊天记录（文件夹）
+					</Button>
+					<Button icon={<ImportOutlined />} onClick={openFilesPicker} className="ml-2">
+						选文件（txt+图片）
 					</Button>
 					<Button icon={<ImportOutlined />} onClick={openZipPicker} className="ml-2">
 						导入 zip
@@ -136,6 +146,13 @@ const ImportChatRecord = ({ renderTrigger }: Props) => {
 				// @ts-expect-error 目录选择是非标准属性，但主流浏览器与 WebView 都支持
 				webkitdirectory=""
 				directory=""
+				multiple
+				onChange={(ev) => handleFilesSelected(ev.target.files)}
+			/>
+			<input
+				ref={filesInputRef}
+				type="file"
+				className="hidden"
 				multiple
 				onChange={(ev) => handleFilesSelected(ev.target.files)}
 			/>
