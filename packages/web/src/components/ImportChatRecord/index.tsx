@@ -3,8 +3,10 @@ import {
 	type IFolderContent,
 	type IParseResult,
 	importChatRecord,
+	isZipFile,
 	parseChatRecord,
 	readSelectedFiles,
+	readZipFile,
 } from "@/services/chatImport";
 import { getAllProfilesValueSnapshot } from "@/stateV2/profile";
 import { ImportOutlined } from "@ant-design/icons";
@@ -14,15 +16,16 @@ import PreviewStep from "./PreviewStep";
 
 type Props = {
 	/**
-	 * 自定义触发器。收到的 open 回调会拉起文件选择。
+	 * 自定义触发器。收到的回调分别拉起「选文件夹」和「选 zip 压缩包」。
 	 * 移动端用微信风格的列表行，桌面端用默认按钮。
 	 */
-	renderTrigger?: (open: () => void) => ReactNode;
+	renderTrigger?: (actions: { openPicker: () => void; openZipPicker: () => void }) => ReactNode;
 };
 
 const ImportChatRecord = ({ renderTrigger }: Props) => {
 	const { message } = App.useApp();
 	const inputRef = useRef<HTMLInputElement>(null);
+	const zipInputRef = useRef<HTMLInputElement>(null);
 	const [open, setOpen] = useState(false);
 	const [folder, setFolder] = useState<IFolderContent>();
 	const [parseResult, setParseResult] = useState<IParseResult>();
@@ -64,21 +67,26 @@ const ImportChatRecord = ({ renderTrigger }: Props) => {
 		}
 	};
 
+	// 拿到内容后的通用后续：解析、校验、开预览弹窗
+	const acceptContent = (content: IFolderContent) => {
+		const result = parseChatRecord(content.text);
+		if (!result.messages.length) {
+			message.error("没有解析到任何消息，请确认文件格式");
+			return;
+		}
+		if (result.speakers.length < 2) {
+			message.warning("只识别到一位发送者，导入后可能全部显示在同一侧");
+		}
+		setFolder(content);
+		setParseResult(result);
+		setOpen(true);
+	};
+
 	const handleFilesSelected = async (files: FileList | null) => {
 		if (!files?.length) return;
 		try {
 			const content = await readSelectedFiles(files);
-			const result = parseChatRecord(content.text);
-			if (!result.messages.length) {
-				message.error("没有解析到任何消息，请确认文件格式");
-				return;
-			}
-			if (result.speakers.length < 2) {
-				message.warning("只识别到一位发送者，导入后可能全部显示在同一侧");
-			}
-			setFolder(content);
-			setParseResult(result);
-			setOpen(true);
+			acceptContent(content);
 		} catch (error) {
 			message.error(error instanceof Error ? error.message : "读取失败");
 		} finally {
@@ -87,16 +95,39 @@ const ImportChatRecord = ({ renderTrigger }: Props) => {
 		}
 	};
 
+	const handleZipSelected = async (files: FileList | null) => {
+		const file = files?.[0];
+		if (!file) return;
+		try {
+			if (!isZipFile(file.name)) {
+				message.error("请选择 .zip 格式的压缩包");
+				return;
+			}
+			const content = await readZipFile(file);
+			acceptContent(content);
+		} catch (error) {
+			message.error(error instanceof Error ? error.message : "读取失败");
+		} finally {
+			if (zipInputRef.current) zipInputRef.current.value = "";
+		}
+	};
+
 	const openPicker = () => inputRef.current?.click();
+	const openZipPicker = () => zipInputRef.current?.click();
 
 	return (
 		<>
 			{renderTrigger ? (
-				renderTrigger(openPicker)
+				renderTrigger({ openPicker, openZipPicker })
 			) : (
-				<Button icon={<ImportOutlined />} onClick={openPicker}>
-					导入聊天记录
-				</Button>
+				<>
+					<Button icon={<ImportOutlined />} onClick={openPicker}>
+						导入聊天记录（文件夹）
+					</Button>
+					<Button icon={<ImportOutlined />} onClick={openZipPicker} className="ml-2">
+						导入 zip
+					</Button>
+				</>
 			)}
 			<input
 				ref={inputRef}
@@ -107,6 +138,13 @@ const ImportChatRecord = ({ renderTrigger }: Props) => {
 				directory=""
 				multiple
 				onChange={(ev) => handleFilesSelected(ev.target.files)}
+			/>
+			<input
+				ref={zipInputRef}
+				type="file"
+				className="hidden"
+				accept=".zip,application/zip,application/x-zip-compressed"
+				onChange={(ev) => handleZipSelected(ev.target.files)}
 			/>
 			<Modal
 				open={open}

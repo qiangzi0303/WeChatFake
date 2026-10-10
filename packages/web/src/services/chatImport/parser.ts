@@ -20,6 +20,8 @@ export enum EParsedMessageType {
 	redPacket = "redPacket",
 	/** 语音/视频通话等系统提示，渲染为居中灰字 */
 	system = "system",
+	/** 表情等无需处理的消息，解析时直接丢弃 */
+	ignore = "ignore",
 }
 
 export interface IParsedMessage {
@@ -62,6 +64,18 @@ const CONTENT_MARKERS: {
 	pick?: (matched: RegExpMatchArray) => Partial<IParsedMessage>;
 }[] = [
 	{
+		// 另一种导出写法：[图片: 文件名(请在附件中查看)]
+		pattern: /^\[图片:\s*(.+?)(?:\s*[(（]请在附件中查看[)）])?\]$/,
+		type: EParsedMessageType.image,
+		pick: (m) => ({ attachmentName: m[1].trim() || undefined }),
+	},
+	{
+		// 另一种导出写法：[视频: 文件名(请在附件中查看)]
+		pattern: /^\[视频:\s*(.+?)(?:\s*[(（]请在附件中查看[)）])?\]$/,
+		type: EParsedMessageType.video,
+		pick: (m) => ({ attachmentName: m[1].trim() || undefined }),
+	},
+	{
 		pattern: /^\[图片\]\s*(.*)$/,
 		type: EParsedMessageType.image,
 		pick: (m) => ({ attachmentName: m[1].trim() || undefined }),
@@ -101,11 +115,27 @@ const SYSTEM_MARKERS: { pattern: RegExp; label: (rest: string) => string }[] = [
 	{ pattern: /^\[名片\]\s*(.*)$/, label: (rest) => (rest ? `名片：${rest}` : "名片") },
 ];
 
+/**
+ * 需要直接忽略、不生成任何消息的标记。
+ * 微信动画表情导出成文本后只剩 `[表情]`，没有可还原的素材，按用户要求整条丢弃。
+ */
+const IGNORE_MARKERS: RegExp[] = [
+	/^\[表情\]$/,
+	/^\[表情[:：].*\]$/,
+	/^\[动画表情\]$/,
+];
+
 /** 解析单条消息的内容行 */
 export const parseContentLine = (
 	raw: string,
 ): Pick<IParsedMessage, "type" | "content" | "attachmentName" | "duration"> => {
 	const line = raw.trim();
+
+	for (const pattern of IGNORE_MARKERS) {
+		if (pattern.test(line)) {
+			return { type: EParsedMessageType.ignore, content: "" };
+		}
+	}
 
 	for (const marker of CONTENT_MARKERS) {
 		const matched = line.match(marker.pattern);
@@ -150,16 +180,154 @@ export const parseSpeakerLine = (line: string): string | undefined => {
 };
 
 /**
+ * 另一种导出格式的日期分隔行，形如：`————— 2020-03-11 —————`
+ * 破折号数量、全角/半角、前后空格都可能有出入，用宽松匹配。
+ */
+const DATE_DIVIDER = /^[—\-－\s]*(\d{4})[-/年](\d{1,2})[-/月](\d{1,2})日?[—\-－\s]*$/;
+
+/**
+ * 另一种导出格式的消息头行，形如：`郝正佳 11:54`
+ * 昵称 + 空格 + 时分（可带秒）。昵称里可能含空格，故时间锚在行尾。
+ */
+const INLINE_HEADER = /^(.+?)\s+(\d{1,2}):(\d{2})(?::(\d{2}))?$/;
+
+/**
+ * 判断文本是否为「日期分隔行 + 昵称 时间」这种导出格式。
+ * 命中条件：存在至少一条日期分隔行，且存在至少一条行内消息头。
+ */
+const isInlineHeaderFormat = (lines: string[]): boolean => {
+	let hasDivider = false;
+	let hasHeader = false;
+	for (const raw of lines) {
+		const line = raw.trim();
+		if (!line) continue;
+		if (DATE_DIVIDER.test(line)) hasDivider = true;
+		else if (INLINE_HEADER.test(line)) hasHeader = true;
+		if (hasDivider && hasHeader) return true;
+	}
+	return false;
+};
+
+/**
+ * 解析「日期分隔行 + `昵称 时间` + 空行 + 内容」这种导出格式。
+ *
+ * 日期来自最近的分隔行，消息头只带时分；内容在消息头之后，
+ * 直到下一个消息头或日期分隔行之前（支持多行、跳过空行）。
+ */
+const parseInlineHeaderFormat = (lines: string[]): IParseResult => {
+	const messages: IParsedMessage[] = [];
+	const speakers: string[] = [];
+	const warnings: string[] = [];
+
+	let index = 0;
+	let cursor = 0;
+	// 当前上下文日期，缺省用今天兜底
+	let curY = new Date().getFullYear();
+	let curM = 1;
+	let curD = 1;
+	let hasDate = false;
+
+	while (cursor < lines.length) {
+		const line = lines[cursor].trim();
+		if (!line) {
+			cursor += 1;
+			continue;
+		}
+
+		const dateMatch = line.match(DATE_DIVIDER);
+		if (dateMatch) {
+			curY = Number(dateMatch[1]);
+			curM = Number(dateMatch[2]);
+			curD = Number(dateMatch[3]);
+			hasDate = true;
+			cursor += 1;
+			continue;
+		}
+
+		const header = line.match(INLINE_HEADER);
+		if (!header) {
+			warnings.push(`第 ${cursor + 1} 行无法识别，已跳过：${line.slice(0, 40)}`);
+			cursor += 1;
+			continue;
+		}
+
+		const speaker = header[1].trim();
+		const hour = Number(header[2]);
+		const minute = Number(header[3]);
+		const second = header[4] ? Number(header[4]) : 0;
+		const rawTime = hasDate
+			? `${curY}-${String(curM).padStart(2, "0")}-${String(curD).padStart(2, "0")} ${header[2]}:${header[3]}`
+			: `${header[2]}:${header[3]}`;
+		const timestamp = new Date(curY, curM - 1, curD, hour, minute, second).getTime();
+
+		// 收集正文：消息头之后，遇到下一条消息头或日期分隔行停止
+		const contentLines: string[] = [];
+		let contentCursor = cursor + 1;
+		while (contentCursor < lines.length) {
+			const contentLine = lines[contentCursor];
+			const trimmed = contentLine.trim();
+			if (!trimmed) {
+				contentCursor += 1;
+				continue;
+			}
+			if (DATE_DIVIDER.test(trimmed) || INLINE_HEADER.test(trimmed)) break;
+			contentLines.push(contentLine);
+			contentCursor += 1;
+		}
+
+		// 没有任何正文（极少见），跳过这条头
+		if (!contentLines.length) {
+			cursor = contentCursor;
+			continue;
+		}
+
+		if (!speakers.includes(speaker)) speakers.push(speaker);
+
+		const parsed = parseContentLine(contentLines[0]);
+		// 表情等忽略类型直接丢弃，不生成消息
+		if (parsed.type === EParsedMessageType.ignore) {
+			cursor = contentCursor;
+			continue;
+		}
+		const content =
+			parsed.type === EParsedMessageType.text
+				? contentLines.map((v) => v.trim()).join("\n")
+				: parsed.content;
+
+		messages.push({
+			index,
+			speaker,
+			timestamp,
+			rawTime,
+			...parsed,
+			content,
+		});
+		index += 1;
+		cursor = contentCursor;
+	}
+
+	return { messages, speakers, warnings };
+};
+
+/**
  * 解析整个聊天记录文件。
  *
- * 采用「以时间行为锚点」的策略而不是死板地三行一组：
- * 时间行格式最固定，最不容易误判。它的上一行是昵称，
- * 下面直到空行或下一个昵称行之前的内容都算正文（支持多行文本）。
+ * 先自动识别导出格式：
+ * - 「日期分隔行 + `昵称 时间` + 内容」走 parseInlineHeaderFormat；
+ * - 否则按默认的「以时间行为锚点」策略解析（`·昵称` + 完整时间 + 内容）。
+ *
+ * 默认策略不死板地三行一组：时间行格式最固定、最不容易误判，
+ * 它的上一行是昵称，下面直到空行或下一条消息昵称行之前都算正文（支持多行）。
  */
 export const parseChatRecord = (rawText: string): IParseResult => {
 	// 去掉 BOM，统一换行符
 	const text = rawText.replace(/^\uFEFF/, "").replace(/\r\n?/g, "\n");
 	const lines = text.split("\n");
+
+	// 行内消息头格式单独处理
+	if (isInlineHeaderFormat(lines)) {
+		return parseInlineHeaderFormat(lines);
+	}
 
 	const messages: IParsedMessage[] = [];
 	const speakers: string[] = [];
@@ -211,6 +379,11 @@ export const parseChatRecord = (rawText: string): IParseResult => {
 		if (!speakers.includes(speaker)) speakers.push(speaker);
 
 		const parsed = parseContentLine(contentLines[0] ?? "");
+		// 表情等忽略类型直接丢弃，不生成消息
+		if (parsed.type === EParsedMessageType.ignore) {
+			cursor = contentCursor;
+			continue;
+		}
 		// 多行文本用换行拼回去，标记类消息只取第一行
 		const content =
 			parsed.type === EParsedMessageType.text

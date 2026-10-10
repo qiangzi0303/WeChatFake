@@ -30,6 +30,7 @@ const TYPE_LABEL: Record<EParsedMessageType, string> = {
 	[EParsedMessageType.transfer]: "转账",
 	[EParsedMessageType.redPacket]: "红包",
 	[EParsedMessageType.system]: "系统提示",
+	[EParsedMessageType.ignore]: "已忽略",
 };
 
 const PreviewStep = ({ folder, parseResult, profiles, importing, onCancel, onConfirm }: Props) => {

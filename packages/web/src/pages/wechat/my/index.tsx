@@ -106,13 +106,21 @@ const My = () => {
 					{isAppMode && devEntriesVisible && (
 						<>
 							<ImportChatRecord
-								renderTrigger={(openPicker) => (
-									<List.Item
-										icon={<ImportOutlined className="text-[#576b95] text-lg" />}
-										onClick={openPicker}
-									>
-										导入聊天记录
-									</List.Item>
+								renderTrigger={({ openPicker, openZipPicker }) => (
+									<>
+										<List.Item
+											icon={<ImportOutlined className="text-[#576b95] text-lg" />}
+											onClick={openPicker}
+										>
+											导入聊天记录（文件夹）
+										</List.Item>
+										<List.Item
+											icon={<ImportOutlined className="text-[#576b95] text-lg" />}
+											onClick={openZipPicker}
+										>
+											导入聊天记录（zip 压缩包）
+										</List.Item>
+									</>
 								)}
 							/>
 							<List.Item
