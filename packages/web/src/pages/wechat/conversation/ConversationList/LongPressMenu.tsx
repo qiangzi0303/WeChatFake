@@ -54,7 +54,9 @@ const LongPressMenu = ({ itemId, disabled, children }: PropsWithChildren<Props>)
 			open={disabled ? false : open}
 			onOpenChange={setOpen}
 		>
-			<div ref={triggerRef}>{children}</div>
+			<div ref={triggerRef} className="flex flex-col space-y-4">
+				{children}
+			</div>
 		</Dropdown>
 	);
 };
