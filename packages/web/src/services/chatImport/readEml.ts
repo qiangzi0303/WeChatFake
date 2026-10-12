@@ -138,3 +138,33 @@ export const readEmlFile = async (file: File): Promise<IFolderContent> => {
 		attachments,
 	};
 };
+
+/**
+ * 读取多个 .eml File 并合并成一个 IFolderContent。
+ *
+ * 用于一次导入同一个人的多份导出邮件：各自的正文按换行拼接、附件合并到一起。
+ * 拼接顺序不影响最终结果——下游会按消息时间戳统一排序去重。
+ */
+export const readEmlFiles = async (files: File[]): Promise<IFolderContent> => {
+	const contents = await Promise.all(files.map((f) => readEmlFile(f)));
+
+	const texts: string[] = [];
+	const attachments: Record<string, File> = {};
+	const names: string[] = [];
+
+	for (const content of contents) {
+		texts.push(content.text);
+		names.push(content.textFileName);
+		for (const [name, file] of Object.entries(content.attachments)) {
+			// 同名附件以先出现的为准
+			if (!attachments[name]) attachments[name] = file;
+		}
+	}
+
+	return {
+		// 用空行分隔不同邮件的正文，避免首尾两行意外粘连
+		text: texts.join("\n\n"),
+		textFileName: names.length > 1 ? `${names.length} 个 eml 文件` : names[0] ?? "",
+		attachments,
+	};
+};

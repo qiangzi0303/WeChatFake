@@ -5,7 +5,7 @@ import {
 	importChatRecord,
 	isEmlFile,
 	parseChatRecord,
-	readEmlFile,
+	readEmlFiles,
 	readSelectedFiles,
 } from "@/services/chatImport";
 import { getAllProfilesValueSnapshot } from "@/stateV2/profile";
@@ -102,14 +102,15 @@ const ImportChatRecord = ({ renderTrigger }: Props) => {
 	};
 
 	const handleEmlSelected = async (files: FileList | null) => {
-		const file = files?.[0];
-		if (!file) return;
+		const list = files ? Array.from(files) : [];
+		if (!list.length) return;
 		try {
-			if (!isEmlFile(file.name)) {
-				message.error("请选择 .eml 格式的聊天记录文件");
+			const invalid = list.find((f) => !isEmlFile(f.name));
+			if (invalid) {
+				message.error("请只选择 .eml 格式的聊天记录文件");
 				return;
 			}
-			const content = await readEmlFile(file);
+			const content = await readEmlFiles(list);
 			acceptContent(content);
 		} catch (error) {
 			message.error(error instanceof Error ? error.message : "读取失败");
@@ -161,6 +162,7 @@ const ImportChatRecord = ({ renderTrigger }: Props) => {
 				type="file"
 				className="hidden"
 				accept=".eml,message/rfc822"
+				multiple
 				onChange={(ev) => handleEmlSelected(ev.target.files)}
 			/>
 			<Modal

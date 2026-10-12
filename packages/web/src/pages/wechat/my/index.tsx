@@ -124,7 +124,7 @@ const My = () => {
 											icon={<ImportOutlined className="text-[#576b95] text-lg" />}
 											onClick={openEmlPicker}
 										>
-											导入聊天记录（eml 文件）
+											导入聊天记录（eml 文件，可多选）
 										</List.Item>
 									</>
 								)}

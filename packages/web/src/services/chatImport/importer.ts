@@ -179,7 +179,7 @@ export const importChatRecord = async (payload: IImportPayload): Promise<IImport
 		targetFriendId,
 		transferAmount,
 		redPacketAmount,
-		overwrite = true,
+		overwrite = false,
 	} = payload;
 
 	const { messages } = parseResult;

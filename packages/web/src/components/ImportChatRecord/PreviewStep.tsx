@@ -41,7 +41,7 @@ const PreviewStep = ({ folder, parseResult, profiles, importing, onCancel, onCon
 	const [targetFriendId, setTargetFriendId] = useState<string>();
 	const [transferAmount, setTransferAmount] = useState("0.00");
 	const [redPacketAmount, setRedPacketAmount] = useState("0.00");
-	const [overwrite, setOverwrite] = useState(true);
+	const [overwrite, setOverwrite] = useState(false);
 
 	const friendSpeaker = useMemo(
 		() => speakers.find((v) => v !== myselfSpeaker) ?? myselfSpeaker,
@@ -165,7 +165,7 @@ const PreviewStep = ({ folder, parseResult, profiles, importing, onCancel, onCon
 					</Form.Item>
 				)}
 
-				<Form.Item>
+				<Form.Item extra="默认追加合并：新记录会和已有记录按时间排序，重复的自动去除。勾选后将清空已有记录只保留本次导入。">
 					<Checkbox checked={overwrite} onChange={(ev) => setOverwrite(ev.target.checked)}>
 						覆盖该联系人已有的聊天记录
 					</Checkbox>
