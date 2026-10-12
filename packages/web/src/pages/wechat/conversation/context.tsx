@@ -55,6 +55,7 @@ interface IConversationAPIContext {
 		data: Omit<IConversationTypeTransfer, "id" | "sendTimestamp" | "upperText" | "type">,
 	) => void;
 	sendRedPacketAcceptedReply: (redPacketId: IConversationTypeRedPacket["id"]) => void;
+	removeConversationItem: (itemId: TConversationItem["id"]) => void;
 	removeLastNode: () => void;
 	focusInput: () => void;
 	mobileInputMode: InputMode;
@@ -197,6 +198,13 @@ export const ConversationAPIProvider = ({ children }: PropsWithChildren) => {
 		Editor.deleteBackward(inputEditor, { unit: "character" });
 	}, []);
 
+	const removeConversationItem = useCallback(
+		(itemId: TConversationItem["id"]) => {
+			setConversationListValue(conversationId, (prev) => prev.filter((v) => v.id !== itemId));
+		},
+		[conversationId],
+	);
+
 	const focusInput = useCallback(() => {
 		setMobileInputMode("text");
 	}, []);
@@ -213,6 +221,7 @@ export const ConversationAPIProvider = ({ children }: PropsWithChildren) => {
 			sendTickleText,
 			sendTransfer,
 			sendRedPacketAcceptedReply,
+			removeConversationItem,
 			focusInput,
 			mobileInputMode,
 			setMobileInputMode,

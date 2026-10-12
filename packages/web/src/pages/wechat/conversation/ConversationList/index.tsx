@@ -18,6 +18,7 @@ import { ReactSortable } from "react-sortablejs";
 import { twJoin } from "tailwind-merge";
 import { useConversationAPI } from "../context";
 import ConversationItem from "./ConversationItem";
+import LongPressMenu from "./LongPressMenu";
 
 const ConversationList = () => {
 	const { listRef, conversationId, sendTransfer, sendRedPacketAcceptedReply } =
@@ -167,7 +168,9 @@ const ConversationList = () => {
 							nodeTreeSort
 							data-conversation-id={item.id}
 						>
-							<ConversationItem data={item} />
+							<LongPressMenu itemId={item.id} disabled={isEdit}>
+								<ConversationItem data={item} />
+							</LongPressMenu>
 						</canBeDetected.div>
 					);
 				})}
