@@ -21,7 +21,8 @@ export const unreadCountEffect = atomEffect((get, set) => {
 		...pv,
 		WECHAT: {
 			...pv.WECHAT,
-			badgeNumber: count,
+			// 未读数为 0 时不显示角标（Badge 的 number 类型仅在值为 nil 时隐藏，传 0 会显示红色「0」）
+			badgeNumber: count > 0 ? count : undefined,
 		},
 	}));
 });
