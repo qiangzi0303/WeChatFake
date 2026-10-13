@@ -30,6 +30,8 @@ const ConversationHeader = () => {
 						type: EMetaDataType.UnreadCount,
 						treeItemDisplayName: "未读消息数",
 					}}
+					// 未读数为 0 时不显示角标，与真实微信一致
+					style={{ display: unreadCount.count > 0 ? undefined : "none" }}
 				>
 					{unreadCount.count}
 				</canBeDetected.div>
