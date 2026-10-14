@@ -8,6 +8,7 @@ import MomentsIndex from "@/pages/wechat/moments";
 import MomentDetail from "@/pages/wechat/moments/Detail";
 import MomentsLayout from "@/pages/wechat/moments/Layout";
 import PersonalMoments from "@/pages/wechat/moments/Personal";
+import MomentsPublish from "@/pages/wechat/moments/Publish";
 import My from "@/pages/wechat/my";
 import ProfileEdit from "@/pages/wechat/my/profile-edit";
 import Service from "@/pages/wechat/service";
@@ -147,6 +148,13 @@ export const routes: RouteObject[] = [
 								},
 							},
 						],
+					},
+					{
+						path: "moments/publish",
+						element: <MomentsPublish />,
+						handle: {
+							label: "routerLabel.wechat.moments",
+						},
 					},
 					{
 						path: "moments/:id",

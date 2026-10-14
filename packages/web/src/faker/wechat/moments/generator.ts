@@ -1,6 +1,7 @@
 import getFakerInstanceByLang from "@/faker/core";
 import type { IStateFeed } from "@/stateV2/moments";
 import type { IStateProfile } from "@/stateV2/profile";
+import type { Descendant } from "slate";
 import dayjs from "dayjs";
 import { nanoid } from "nanoid";
 
@@ -24,6 +25,21 @@ export function generateFakeFeed(userId: IStateProfile["id"]): IStateFeed {
 		content: {
 			type: "textWithImages",
 			imagesInfo: randomFeedImage(3),
+		},
+		userId,
+	};
+}
+
+/**
+ * 发表一条纯文本朋友圈
+ */
+export function generateTextFeed(userId: IStateProfile["id"], text: Descendant[]): IStateFeed {
+	return {
+		id: randomFeedId(),
+		sendTimestamp: dayjs().valueOf(),
+		content: {
+			type: "text",
+			text,
 		},
 		userId,
 	};

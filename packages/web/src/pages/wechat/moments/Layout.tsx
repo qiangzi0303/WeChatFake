@@ -204,9 +204,17 @@ const MomentsLayout = () => {
 				</div>
 				<div className="flex justify-end">
 					{barUseBlack ? (
-						<CameraOutlinedSVG fill="currentColor" className="h-5 w-5" />
+						<CameraOutlinedSVG
+							fill="currentColor"
+							className="h-5 w-5 cursor-pointer"
+							onClick={() => navigate("/wechat/moments/publish")}
+						/>
 					) : (
-						<CameraFilledSVG fill="currentColor" className="h-5 w-5" />
+						<CameraFilledSVG
+							fill="currentColor"
+							className="h-5 w-5 cursor-pointer"
+							onClick={() => navigate("/wechat/moments/publish")}
+						/>
 					)}
 				</div>
 			</div>
