@@ -35,8 +35,8 @@ export default {
 				// 行高 23px（17×1.366≈23），随字号等比保持气泡观感。
 				// 导航栏标题与聊天气泡正文同为此号、同为常规字重。
 				wechat: ["17px", "23px"],
-				// 原 WeUI @weuiCellTipsFontSize=14，随正文等比上调。
-				wechatTips: ["16px", "1.6"],
+				// 会话列表摘要 = 14px（微信官方真机标定值，WeUI @weuiCellTipsFontSize）。
+				wechatTips: ["14px", "1.4"],
 				// 聊天页内的时间分割与系统提示，小于列表摘要字号。
 				wechatTimeDivider: ["14px", "1.4"],
 				// 会话列表右上角的时间，同样小于摘要字号。
