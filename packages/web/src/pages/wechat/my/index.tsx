@@ -100,7 +100,11 @@ const My = () => {
 					</List.Item>
 				</List>
 				<List className="mt-1.5">
-					<List.Item withJump icon={<Setting_Outlined_SVG fill="#2A7FCB" />}>
+					<List.Item
+						withJump
+						icon={<Setting_Outlined_SVG fill="#2A7FCB" />}
+						onClick={() => navigate("/wechat/settings")}
+					>
 						{t("wechatPage.my.settings")}
 					</List.Item>
 					{isAppMode && devEntriesVisible && (

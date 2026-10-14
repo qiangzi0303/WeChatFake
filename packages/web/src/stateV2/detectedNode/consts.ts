@@ -41,4 +41,6 @@ export enum EMetaDataType {
 	FriendsTotalCount = "friendsTotalCount",
 	/** 多设备登录提醒 */
 	MultipleDeviceLogin = "multipleDeviceLogin",
+	/** 飞行模式断网提示条 */
+	AirplaneMode = "airplaneMode",
 }

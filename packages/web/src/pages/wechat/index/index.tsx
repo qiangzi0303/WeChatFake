@@ -9,6 +9,7 @@ import { useAtom, useAtomValue } from "jotai";
 import { useTranslation } from "react-i18next";
 import DialogueList from "./DialogueList";
 import MultipleDeviceLogin from "./MultipleDeviceLogin";
+import NetworkErrorBar from "./NetworkErrorBar";
 
 const WechatIndex = () => {
 	const { count } = useAtomValue(unreadCountAtom);
@@ -37,6 +38,7 @@ const WechatIndex = () => {
 					<PlusCircleSVG width={16} fill="black" className="cursor-pointer" />
 				</div>
 			</div>
+			<NetworkErrorBar />
 			<div className="flex flex-1 flex-col overflow-y-auto bg-white">
 				<div className="flex bg-[rgba(237,237,237,1)] px-2 pb-2">
 					<div className="flex flex-1 items-center justify-center rounded-[4px] bg-white p-2 text-xs">

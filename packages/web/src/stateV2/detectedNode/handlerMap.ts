@@ -4,6 +4,7 @@ import { conversationListAtom, inputterConfigAtom } from "@/stateV2/conversation
 import { dialogueListAtom } from "@/stateV2/dialogueList";
 import { feedListAtom } from "@/stateV2/moments";
 import { multipleDeviceLoginAtom } from "@/stateV2/multipleDeviceLogin";
+import { airplaneModeAtom } from "@/stateV2/airplaneMode";
 import {
 	allProfilesAtom,
 	allProfilesIdsAtom,
@@ -59,6 +60,7 @@ const handlerMap: HandlerMap = {
 	[EMetaDataType.ContactsContainer]: (get) => get(allProfilesIdsAtom),
 	[EMetaDataType.FriendsTotalCount]: (get) => get(friendsTotalCountDisplayConfigAtom),
 	[EMetaDataType.MultipleDeviceLogin]: (get) => get(multipleDeviceLoginAtom),
+	[EMetaDataType.AirplaneMode]: (get) => get(airplaneModeAtom),
 };
 
 export default handlerMap;

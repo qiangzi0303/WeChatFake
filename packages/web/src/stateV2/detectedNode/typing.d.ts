@@ -3,6 +3,7 @@ import type { TConversationItem, TStateConversationInputterConfig } from "@/stat
 import type { IDialogueItem } from "@/stateV2/dialogueList";
 import type { IFeedComment, IStateFeed } from "@/stateV2/moments";
 import type { TStateMultipleDeviceLogin } from "@/stateV2/multipleDeviceLogin";
+import type { TStateAirplaneMode } from "@/stateV2/airplaneMode";
 import type { IStateProfile, TStateFriendsTotalCountDisplayConfig } from "@/stateV2/profile";
 import type { TTransactionData, TTransactionType } from "@/stateV2/transaction";
 import type { TStateUnreadCount } from "@/stateV2/unreadCount";
@@ -165,6 +166,12 @@ declare namespace OverallMetaData {
 		treeItemDisplayName: string | ((data: TStateMultipleDeviceLogin) => string);
 	}
 
+	interface IMetaDataAirplaneMode extends Base {
+		type: EMetaDataType.AirplaneMode;
+		data: TStateAirplaneMode;
+		treeItemDisplayName: string | ((data: TStateAirplaneMode) => string);
+	}
+
 	interface IMetaDataSimple extends Base {
 		treeItemDisplayName: string;
 	}
@@ -191,6 +198,7 @@ declare namespace OverallMetaData {
 		| IMetaDataContactsContainer
 		| IMetaDataFriendsTotalCount
 		| IMetaDataMultipleDeviceLogin
+		| IMetaDataAirplaneMode
 		| IMetaDataSimple;
 
 	type OverallIndex = GetTypeInUnion<Overall, "index">;

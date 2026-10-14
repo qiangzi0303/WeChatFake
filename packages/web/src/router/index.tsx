@@ -11,6 +11,7 @@ import PersonalMoments from "@/pages/wechat/moments/Personal";
 import My from "@/pages/wechat/my";
 import ProfileEdit from "@/pages/wechat/my/profile-edit";
 import Service from "@/pages/wechat/service";
+import Settings from "@/pages/wechat/settings";
 import DetailAdapter from "@/pages/wechat/transaction";
 import Wallet from "@/pages/wechat/wallet";
 import Balance from "@/pages/wechat/wallet/Balance";
@@ -76,6 +77,13 @@ export const routes: RouteObject[] = [
 							label: "routerLabel.wechat.services",
 						},
 						element: <Service />,
+					},
+					{
+						path: "settings",
+						handle: {
+							label: "设置",
+						},
+						element: <Settings />,
 					},
 					{
 						path: "wallet",
