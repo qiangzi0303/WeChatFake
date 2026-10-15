@@ -6,6 +6,7 @@ import { useAtom, useSetAtom } from "jotai";
 import { useMemo } from "react";
 import { ReactSortable } from "react-sortablejs";
 import DialogueItem from "./DialogueItem";
+import DialogueLongPressMenu from "./DialogueLongPressMenu";
 
 const DialogueList = () => {
 	const { isEdit } = useMode();
@@ -49,7 +50,14 @@ const DialogueList = () => {
 				}}
 			>
 				{dialogueList.map((item) => (
-					<DialogueItem itemId={item.id} key={item.id} className={isEdit ? "cursor-grab" : ""} />
+					<DialogueLongPressMenu
+						key={item.id}
+						itemId={item.id}
+						friendId={item.friendId}
+						disabled={isEdit}
+					>
+						<DialogueItem itemId={item.id} className={isEdit ? "cursor-grab" : ""} />
+					</DialogueLongPressMenu>
 				))}
 			</ReactSortable>
 		</canBeDetected.section>
