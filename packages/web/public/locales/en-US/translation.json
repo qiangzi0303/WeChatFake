@@ -207,7 +207,9 @@
 			"privacyHideFriend": "Hide {{title}} Moments and Status",
 			"more": "More",
 			"sendMessage": "Send Message",
-			"call": "Voice or Video Call"
+			"call": "Voice or Video Call",
+			"profile": "Friend Profile",
+			"profileDesc": "Add remark, phone, tags, notes, photos and set friend permissions."
 		},
 		"moments": {
 			"title": "Moments",

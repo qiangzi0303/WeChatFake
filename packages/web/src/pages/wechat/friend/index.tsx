@@ -11,10 +11,10 @@ import useModeNavigate from "@/components/useModeNavigate";
 import { MYSELF_ID } from "@/faker/wechat/user";
 import { EMetaDataType, type StaticMetaData } from "@/stateV2/detectedNode";
 import { dialogueListAtom } from "@/stateV2/dialogueList";
-import { type IStateProfile, PRIVACY_TEXT_MAP, profileAtom } from "@/stateV2/profile";
+import { type IStateProfile, profileAtom } from "@/stateV2/profile";
 import dayjs from "dayjs";
 import { useAtomValue, useSetAtom } from "jotai";
-import { isEmpty, isString } from "lodash-es";
+import { isEmpty } from "lodash-es";
 import { nanoid } from "nanoid";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
@@ -44,12 +44,8 @@ const Friend = () => {
 		hideGender,
 		remark,
 		area,
-		phone,
-		tags,
-		privacy,
 		thumbnailInfo,
 		hideThumbnail,
-		description,
 	} = profile;
 
 	const getMetaData = (): StaticMetaData.InjectMetaData => {
@@ -66,15 +62,6 @@ const Friend = () => {
 			index: userId!,
 			treeItemDisplayName,
 		};
-	};
-
-	const getPrivacyText = () => {
-		if (privacy === undefined) return null;
-		const handle = PRIVACY_TEXT_MAP[privacy];
-		if (isString(handle)) {
-			return t(handle);
-		}
-		return handle(gender!, t);
 	};
 
 	return (
@@ -119,57 +106,17 @@ const Friend = () => {
 					</div>
 				</div>
 				{!isMyself && (
-					<>
-						{isEmpty(description) && isEmpty(tags) && (
-							<div className="flex cursor-pointer border-black/5 border-b bg-white py-3 pl-5">
-								<div className="w-20 whitespace-pre">{t("wechatPage.friend.editContact")}</div>
-								<div className="flex flex-1 pr-3">
-									<div className="text-black/50" />
-									<ArrowOutlinedSVG fill="rgba(0,0,0,0.3)" className="ml-auto w-[18px]" />
-								</div>
-							</div>
-						)}
-						{!isEmpty(phone) && (
-							<div className="flex border-black/5 border-b bg-white pl-5">
-								<div className="w-20 py-3">{t("wechatPage.friend.mobile")}</div>
-								<div className="flex flex-1 flex-col">
-									{phone?.map((v, i) => (
-										<div
-											className="cursor-pointer border-black/5 border-b py-3 text-wechatLink-1 last:border-none"
-											key={i}
-										>
-											{v}
-										</div>
-									))}
-								</div>
-							</div>
-						)}
-						{!isEmpty(tags) && (
-							<div className="flex cursor-pointer border-black/5 border-b bg-white py-3 pl-5">
-								<div className="w-20 whitespace-pre">{t("wechatPage.friend.tags")}</div>
-								<div className="flex flex-1 pr-3">
-									<div className="text-black/50">{tags?.join(", ")}</div>
-									<ArrowOutlinedSVG fill="rgba(0,0,0,0.3)" className="ml-auto w-[18px]" />
-								</div>
-							</div>
-						)}
-						{!isEmpty(description) && (
-							<div className="flex cursor-pointer border-black/5 border-b bg-white py-3 pl-5">
-								<div className="w-20">{t("wechatPage.friend.desc")}</div>
-								<div className="flex flex-1 pr-3">
-									<div className="text-black/50">{description}</div>
-									<ArrowOutlinedSVG fill="rgba(0,0,0,0.3)" className="ml-auto w-[18px]" />
-								</div>
-							</div>
-						)}
-						<div className="flex cursor-pointer bg-white py-3 pl-5">
-							<div className="w-20">{t("wechatPage.friend.privacy")}</div>
-							<div className="flex flex-1 pr-3">
-								<div className="text-black/50">{getPrivacyText()}</div>
+					<div className="flex cursor-pointer bg-white py-3 pl-5">
+						<div className="flex flex-1 flex-col pr-3">
+							<div className="flex items-center">
+								<div className="flex-1">{t("wechatPage.friend.profile")}</div>
 								<ArrowOutlinedSVG fill="rgba(0,0,0,0.3)" className="ml-auto w-[18px]" />
 							</div>
+							<div className="mt-1 text-black/40 text-sm leading-snug">
+								{t("wechatPage.friend.profileDesc")}
+							</div>
 						</div>
-					</>
+					</div>
 				)}
 				<div className="mb-12">
 					<div className="mt-2 cursor-pointer bg-white">
@@ -192,12 +139,6 @@ const Friend = () => {
 								</div>
 							</div>
 						)}
-						<div className="ml-5 flex py-3">
-							<div className="w-20">{t("wechatPage.friend.more")}</div>
-							<div className="flex flex-1 pr-3">
-								<ArrowOutlinedSVG fill="rgba(0,0,0,0.3)" className="ml-auto w-[18px]" />
-							</div>
-						</div>
 					</div>
 					<div className="mt-2 cursor-pointer bg-white">
 						<div

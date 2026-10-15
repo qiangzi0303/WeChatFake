@@ -207,7 +207,9 @@
 			"privacyHideFriend": "不看{{title}}朋友圈和状态",
 			"more": "更多信息",
 			"sendMessage": "发消息",
-			"call": "音视频通话"
+			"call": "音视频通话",
+			"profile": "朋友资料",
+			"profileDesc": "添加朋友的备注名、电话、标签、备忘、照片等，并设置朋友权限。"
 		},
 		"moments": {
 			"title": "朋友圈",
