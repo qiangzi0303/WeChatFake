@@ -16,6 +16,12 @@ const MomentsIndex = () => {
 		return feedList.map((v) => ({ id: v.id }));
 	}, [feedList]);
 
+	// 预览模式下按发布时间倒序展示，编辑模式保留手动拖拽排序
+	const displayFeedList = useMemo(() => {
+		if (isEdit) return feedList;
+		return feedList.slice().sort((a, b) => b.sendTimestamp - a.sendTimestamp);
+	}, [feedList, isEdit]);
+
 	const feedClassNames = useMemo(() => {
 		return {
 			container: isEdit ? "cursor-grab" : "",
@@ -47,7 +53,7 @@ const MomentsIndex = () => {
 					rebuildTree();
 				}}
 			>
-				{feedList.map((feed) => (
+				{displayFeedList.map((feed) => (
 					<Feed key={feed.id} id={feed.id} userId={feed.userId} classNames={feedClassNames} />
 				))}
 			</ReactSortable>
