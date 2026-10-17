@@ -1,10 +1,11 @@
 import { type IStateFeed, feedAtom } from "@/stateV2/moments";
-import { DatePicker, Form, Radio } from "antd";
+import { Form, Radio } from "antd";
 import dayjs from "dayjs";
 import { useSetAtom } from "jotai";
 import DragSort from "./DragSort";
 import FriendSelect, { FriendItem } from "./FriendSelect";
 import LocalImageUploadWithPreview from "./LocalImageUpload";
+import NativeDateTimePicker from "./NativeDateTimePicker";
 import WrapSlateInput from "./SlateInput";
 
 const FeedMetaDataEditor = ({ data, index }: EditorProps<IStateFeed, IStateFeed["id"]>) => {
@@ -50,7 +51,7 @@ const FeedMetaDataEditor = ({ data, index }: EditorProps<IStateFeed, IStateFeed[
 				}}
 				normalize={(v) => v.valueOf()}
 			>
-				<DatePicker showTime allowClear={false} />
+				<NativeDateTimePicker />
 			</Form.Item>
 			<Form.Item<IStateFeed>
 				name={["content", "type"]}

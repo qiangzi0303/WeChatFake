@@ -1,7 +1,7 @@
 import { DEFAULT_FEED } from "@/faker/wechat/moments";
 import { type IStateFeed, feedListAtom } from "@/stateV2/moments";
 import type { IStateProfile } from "@/stateV2/profile";
-import { Button, DatePicker, Form, Radio, type RadioChangeEvent } from "antd";
+import { Button, Form, Radio, type RadioChangeEvent } from "antd";
 import dayjs from "dayjs";
 import { useSetAtom } from "jotai";
 import { omit } from "lodash-es";
@@ -9,6 +9,7 @@ import { nanoid } from "nanoid";
 import DragSort from "./DragSort";
 import FriendSelect, { FriendItem } from "./FriendSelect";
 import LocalImageUploadWithPreview from "./LocalImageUpload";
+import NativeDateTimePicker from "./NativeDateTimePicker";
 import SlateInput from "./SlateInput";
 
 const AllFeedsMetaDataEditor = ({ index }: EditorProps<unknown, IStateProfile["id"]>) => {
@@ -63,7 +64,7 @@ const AllFeedsMetaDataEditor = ({ index }: EditorProps<unknown, IStateProfile["i
 				}}
 				normalize={(v) => v.valueOf()}
 			>
-				<DatePicker showTime allowClear={false} />
+				<NativeDateTimePicker />
 			</Form.Item>
 			<Form.Item<IStateFeed> name={["content", "type"]} label="类型" rules={[{ required: true }]}>
 				<Radio.Group onChange={onTypeChange}>

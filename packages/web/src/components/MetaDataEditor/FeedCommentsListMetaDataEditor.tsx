@@ -1,10 +1,11 @@
 import { randomFeedId } from "@/faker/wechat/moments";
 import { type IFeedComment, type IStateFeed, feedAtom } from "@/stateV2/moments";
 import { SLATE_EMPTY_VALUE } from "@/wechatComponents/SlateText/utils";
-import { Button, DatePicker, Form } from "antd";
+import { Button, Form } from "antd";
 import dayjs from "dayjs";
 import { useSetAtom } from "jotai";
 import FriendSelect from "./FriendSelect";
+import NativeDateTimePicker from "./NativeDateTimePicker";
 import SlateInput from "./SlateInput";
 
 const FeedCommentsListMetaDataEditor = ({
@@ -55,7 +56,7 @@ const FeedCommentsListMetaDataEditor = ({
 				}}
 				normalize={(v) => v.valueOf()}
 			>
-				<DatePicker showTime allowClear={false} />
+				<NativeDateTimePicker />
 			</Form.Item>
 			<Form.Item>
 				<Button type="primary" htmlType="submit">

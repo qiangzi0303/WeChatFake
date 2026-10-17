@@ -1,8 +1,9 @@
 import { type IFeedComment, type IStateFeed, feedAtom } from "@/stateV2/moments";
-import { DatePicker, Form } from "antd";
+import { Form } from "antd";
 import dayjs from "dayjs";
 import { useSetAtom } from "jotai";
 import FriendSelect from "./FriendSelect";
+import NativeDateTimePicker from "./NativeDateTimePicker";
 import SlateInput from "./SlateInput";
 
 const FeedCommentItemMetaDataEditor = ({
@@ -56,7 +57,7 @@ const FeedCommentItemMetaDataEditor = ({
 				}}
 				normalize={(v) => v.valueOf()}
 			>
-				<DatePicker showTime allowClear={false} />
+				<NativeDateTimePicker />
 			</Form.Item>
 		</Form>
 	);
