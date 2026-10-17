@@ -21,7 +21,9 @@ const ConversationHeader = () => {
 					fill="black"
 					className="h-5 w-5 cursor-pointer"
 					onClick={() => {
-						navigate("/wechat");
+						// 返回上一页，而非强制跳首页：
+						// 从好友资料页进会话应回到资料页，从会话列表进则回首页。
+						navigate(-1);
 					}}
 				/>
 				<canBeDetected.div
