@@ -3,7 +3,11 @@ import { Button, Modal } from "antd";
 import type { FallbackProps } from "react-error-boundary";
 
 const Fallback = (props: FallbackProps) => {
+	const { error } = props;
 	console.log(props);
+	// 把真实报错显示出来，便于手机端定位（否则只能看到通用提示）
+	const message = error instanceof Error ? error.message : String(error);
+	const stack = error instanceof Error ? error.stack : undefined;
 	return (
 		<Modal
 			open={true}
@@ -28,6 +32,10 @@ const Fallback = (props: FallbackProps) => {
 				<Button type="link" href="mailto:liangniangbaby@gmail.com" target="_blank" className="px-0">
 					开发者
 				</Button>
+			</div>
+			<div className="mt-2 max-h-48 overflow-auto rounded bg-black/5 p-2 text-left text-red-700 text-xs">
+				<div className="font-bold">{message}</div>
+				{stack && <pre className="whitespace-pre-wrap break-all text-[10px]">{stack}</pre>}
 			</div>
 		</Modal>
 	);
