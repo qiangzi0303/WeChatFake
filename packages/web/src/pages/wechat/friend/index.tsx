@@ -155,7 +155,7 @@ const Friend = () => {
 											{
 												id: nanoid(5),
 												friendId: userId,
-												lastMessage: "进入编辑模式修改该文本",
+												lastMessage: "",
 												lastMessageTime: dayjs().format("HH:mm"),
 											},
 											...prev,
