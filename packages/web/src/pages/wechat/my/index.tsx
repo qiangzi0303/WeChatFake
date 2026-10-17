@@ -32,12 +32,12 @@ const My = () => {
 	const { t } = useTranslation();
 	useToggleNavbarActivated(EBottomNavBars.MY);
 
-	// App 模式下「导入聊天记录 / 编辑模式」默认隐藏，长按本页切换显隐，
+	// App 模式下「导入聊天记录 / 编辑模式」默认隐藏，长按本页 5 秒切换显隐，
 	// 避免这两个开发入口常驻在高仿界面里。
 	const [devEntriesVisible, setDevEntriesVisible] = useState(false);
 	const pageRef = useRef<HTMLDivElement>(null);
 
-	useLongPress(() => setDevEntriesVisible((v) => !v), pageRef);
+	useLongPress(() => setDevEntriesVisible((v) => !v), pageRef, { delay: 5000 });
 
 	return (
 		<div ref={pageRef} className="flex min-h-0 flex-1 flex-col">
