@@ -43,9 +43,14 @@ const MomentsIndex = () => {
 				animation={400}
 				setList={(v, sortable) => {
 					if (isEdit && sortable) {
-						const needUpdate = v.some((_, i) => v[i].id !== feedList[i].id);
+						// 长度不一致或存在找不到的项时跳过，避免越界访问导致整页崩溃
+						if (v.length !== feedList.length) return;
+						const needUpdate = v.some((item, i) => item.id !== feedList[i]?.id);
 						if (needUpdate) {
-							setFeedList(v.map((i) => feedList.find((d) => d.id === i.id)!));
+							const next = v.map((i) => feedList.find((d) => d.id === i.id));
+							if (next.every((d): d is (typeof feedList)[number] => Boolean(d))) {
+								setFeedList(next);
+							}
 						}
 					}
 				}}

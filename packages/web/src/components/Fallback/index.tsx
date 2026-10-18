@@ -1,13 +1,23 @@
 import { CloseCircleFilled } from "@ant-design/icons";
-import { Button, Modal } from "antd";
+import { Button, Modal, message } from "antd";
 import type { FallbackProps } from "react-error-boundary";
 
 const Fallback = (props: FallbackProps) => {
 	const { error } = props;
 	console.log(props);
 	// 把真实报错显示出来，便于手机端定位（否则只能看到通用提示）
-	const message = error instanceof Error ? error.message : String(error);
+	const message_ = error instanceof Error ? error.message : String(error);
 	const stack = error instanceof Error ? error.stack : undefined;
+	const fullText = `${message_}\n${stack ?? ""}`;
+	const handleCopy = async () => {
+		try {
+			await navigator.clipboard.writeText(fullText);
+			message.success("已复制错误信息");
+		} catch {
+			// 某些 WebView 不支持 clipboard API，降级为选中提示
+			message.info("请长按下方错误文字手动复制");
+		}
+	};
 	return (
 		<Modal
 			open={true}
@@ -33,8 +43,14 @@ const Fallback = (props: FallbackProps) => {
 					开发者
 				</Button>
 			</div>
-			<div className="mt-2 max-h-48 overflow-auto rounded bg-black/5 p-2 text-left text-red-700 text-xs">
-				<div className="font-bold">{message}</div>
+			<div className="mt-2 flex items-center justify-between">
+				<span className="text-gray-400 text-xs">错误详情（反馈时请一并提供）</span>
+				<Button size="small" onClick={handleCopy}>
+					复制错误
+				</Button>
+			</div>
+			<div className="mt-1 max-h-48 overflow-auto rounded bg-black/5 p-2 text-left text-red-700 text-xs">
+				<div className="font-bold">{message_}</div>
 				{stack && <pre className="whitespace-pre-wrap break-all text-[10px]">{stack}</pre>}
 			</div>
 		</Modal>
