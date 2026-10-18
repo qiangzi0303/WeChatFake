@@ -16,10 +16,24 @@ android {
             ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
+    // 固定签名：保证每次 CI 出的包签名一致，可直接覆盖安装、保留本地数据（聊天记录/设置）。
+    // 这是小范围测试用途的 keystore，密码公开无妨。
+    signingConfigs {
+        fixed {
+            storeFile file('fakeworld-release.keystore')
+            storePassword 'fakeworld123'
+            keyAlias 'fakeworld'
+            keyPassword 'fakeworld123'
+        }
+    }
     buildTypes {
+        debug {
+            signingConfig signingConfigs.fixed
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.fixed
         }
     }
 }

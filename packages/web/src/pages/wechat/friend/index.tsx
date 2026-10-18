@@ -169,7 +169,7 @@ const Friend = () => {
 						</div>
 						{!isMyself && (
 							<div className="flex items-center justify-center space-x-2 border-black/5 border-b py-3 text-wechatLink-1">
-								<VideoCallOutlinedSVG fill="#465677" className="h-5 w-5" />
+								<VideoCallOutlinedSVG className="h-5 w-5 text-[#465677]" />
 								<span className="font-medium">{t("wechatPage.friend.call")}</span>
 							</div>
 						)}

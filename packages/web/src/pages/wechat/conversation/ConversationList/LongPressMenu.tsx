@@ -25,6 +25,7 @@ const LongPressMenu = ({ itemId, disabled, children }: PropsWithChildren<Props>)
 			setOpen(true);
 		},
 		triggerRef,
+		{ delay: 20000 },
 	);
 
 	const handleDelete = () => {
