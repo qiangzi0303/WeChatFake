@@ -17,7 +17,10 @@ type Props = SelectProps<IStateProfile["id"] | IStateProfile["id"][]> & {
 };
 
 export const FriendItem = ({ id, className }: { id: IStateProfile["id"]; className?: string }) => {
-	const { nickname, wechat, remark } = useAtomValue(profileAtom(id))!;
+	const profile = useAtomValue(profileAtom(id));
+	// profile 不存在（如好友已删除）时不渲染，避免整页崩溃
+	if (!profile) return null;
+	const { nickname, wechat, remark } = profile;
 	return <div className={className}>{`${remark ?? nickname}（${wechat}）`}</div>;
 };
 

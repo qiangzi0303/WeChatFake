@@ -32,11 +32,13 @@ const DialogueItem = ({ itemId, className }: Props) => {
 		lastMessage,
 		lastMessageTime,
 	} = useAtomValue(dialogueItemAtom(itemId))!;
-	const friendProfile = useAtomValue(profileAtom(friendId))!;
+	const friendProfile = useAtomValue(profileAtom(friendId));
 	const setConversationList = useSetAtom(conversationListAtom(friendId));
 	const setDialogueList = useSetAtom(dialogueListAtom);
 	const navigate = useNavigate();
 
+	// 会话对应好友的 profile 不存在（如好友已删除）时跳过渲染，避免整页崩溃
+	if (!friendProfile) return null;
 	const { nickname, avatarInfo, remark } = friendProfile;
 
 	const handleOperationDelete = () => {

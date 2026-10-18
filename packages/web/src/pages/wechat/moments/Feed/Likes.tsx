@@ -20,8 +20,12 @@ type LikeItemProps = {
 };
 
 const LikeItem = ({ userId, displayType }: LikeItemProps) => {
-	const { nickname, remark, avatarInfo } = useAtomValue(profileAtom(userId))!;
+	const profile = useAtomValue(profileAtom(userId));
 	const navigate = useModeNavigate({ silence: true });
+
+	// 点赞用户引用了不存在的 profile（如好友已删除）时跳过渲染，避免整页崩溃
+	if (!profile) return null;
+	const { nickname, remark, avatarInfo } = profile;
 
 	const showName = displayType === "name";
 	const showAvatar = displayType === "avatar";

@@ -32,7 +32,7 @@ const Feed = ({
 	classNames,
 	fromDetail,
 }: Omit<IStateFeed, "sendTimestamp" | "content"> & Props) => {
-	const { nickname, remark } = useAtomValue(profileAtom(userId))!;
+	const profile = useAtomValue(profileAtom(userId));
 	const setFeedList = useSetAtom(feedListAtom);
 	const setFeed = useSetAtom(feedAtom(id));
 	const originalNavigate = useNavigate();
@@ -61,6 +61,10 @@ const Feed = ({
 	const toFriendPage = useCallback(() => {
 		navigate(`/wechat/friend/${userId}`);
 	}, [userId]);
+
+	// 朋友圈作者的 profile 不存在（如好友已删除）时跳过渲染，避免整页崩溃
+	if (!profile) return null;
+	const { nickname, remark } = profile;
 
 	let operations = [
 		{

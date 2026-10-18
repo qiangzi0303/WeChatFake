@@ -17,10 +17,14 @@ const CommentUserText = ({
 	fromUserId,
 	replyUserId,
 }: Pick<IFeedComment, "fromUserId" | "replyUserId">) => {
-	const { nickname: fromNickname, remark: fromRemark } = useAtomValue(profileAtom(fromUserId))!;
+	const fromProfile = useAtomValue(profileAtom(fromUserId));
 	const { nickname: replyNickname, remark: replyRemark } =
 		useAtomValue(profileAtom(replyUserId || "")) ?? {};
 	const navigate = useModeNavigate({ silence: true });
+
+	// 评论发送者的 profile 不存在（如好友已删除）时跳过渲染，避免整页崩溃
+	if (!fromProfile) return null;
+	const { nickname: fromNickname, remark: fromRemark } = fromProfile;
 
 	const renderReplyText = () => {
 		if (replyUserId) {
